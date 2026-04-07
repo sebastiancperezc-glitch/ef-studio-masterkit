@@ -820,9 +820,13 @@ async function generar() {
       })
     });
     var d = await r.json();
-    rt.textContent = d.content ? d.content.map(function(b){ return b.text||''; }).join('') : 'Error al generar. Intentá de nuevo.';
+    if (d.content) {
+      rt.textContent = d.content.map(function(b){ return b.text||''; }).join('');
+    } else {
+      rt.textContent = 'Error: ' + (d.error ? JSON.stringify(d.error) : 'Respuesta vacía');
+    }
   } catch(err) {
-    rt.textContent = 'No se pudo conectar con la IA. Verificá tu conexión e intentá de nuevo.';
+    rt.textContent = 'Error de conexión: ' + err.message;
   }
 
   btn.disabled = false;
@@ -1427,5 +1431,7 @@ draw();
   </button>
 </nav>
 
+</body>
+</html>
 </body>
 </html>
