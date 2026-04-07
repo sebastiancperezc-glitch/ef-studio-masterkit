@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EF Studio Masterkit — Educazione Fisica</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:   #111115;
+  --s1:   #17171C;
+  --s2:   #1E1E24;
+  --s3:   #26262D;
+  --s4:   #2E2E36;
+  --s5:   #3A3A44;
+  --or:   #38BDF8;
+  --or2:  #7DD3FC;
+  --odim: rgba(56,189,248,0.10);
+  --obrd: rgba(56,189,248,0.25);
+  --txt:  #F0EEF8;
+  --txt2: #8886A0;
+  --txt3: #555568;
+  --brd:  rgba(255,255,255,0.06);
+  --brd2: rgba(255,255,255,0.11);
+  --grn:  #22C56A;
+  --grnbg:rgba(34,197,106,0.10);
+  --wrn:  #F0A830;
+  --wrnbg:rgba(240,168,48,0.10);
+  --dng:  #FF4444;
+  --blu:  #4A90E2;
+  --blubg:rgba(74,144,226,0.10);
+  --r:    12px;
+  --sw:   210px;
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);display:flex;font-size:14px;line-height:1.5;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:10px;}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sw);min-height:100vh;background:var(--s1);border-right:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;}
+.brand{padding:20px 16px 16px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px;}
+.bico{width:36px;height:36px;background:var(--or);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bico svg{width:20px;height:20px;}
+.bname{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--txt);letter-spacing:-0.3px;line-height:1;}
+.bsub{font-size:10px;color:var(--txt3);margin-top:2px;font-weight:500;letter-spacing:0.04em;}
+.nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:1px;}
+.nsep{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);padding:14px 10px 6px;}
+.nb{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;border:none;background:none;color:var(--txt2);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;text-align:left;transition:all .15s;}
+.nb:hover{background:var(--s3);color:var(--txt);}
+.nb.on{background:var(--odim);color:var(--or2);font-weight:600;}
+.ni{width:16px;height:16px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.nbg{margin-left:auto;background:var(--s4);color:var(--txt3);font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.02em;}
+.nb.on .nbg{background:var(--odim);color:var(--or);}
+.sbfoot{padding:14px;border-top:1px solid var(--brd);}
+.ppill{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--odim);border-radius:9px;border:1px solid var(--obrd);}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--or);flex-shrink:0;box-shadow:0 0 6px var(--or);}
+.plbl{font-size:11px;font-weight:600;color:var(--or2);}
+
+/* ── MAIN ── */
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.tb{height:54px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--s1);flex-shrink:0;}
+.ptitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;color:var(--txt);}
+.tbr{display:flex;gap:8px;}
+.xb{height:32px;padding:0 14px;border-radius:7px;border:1px solid var(--brd2);background:transparent;color:var(--txt2);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.xb:hover{background:var(--s3);color:var(--txt);}
+.xb.p{background:var(--or);color:#fff;border-color:var(--or);font-weight:600;}
+.xb.p:hover{background:var(--or2);}
+.cnt{flex:1;overflow-y:auto;padding:28px;}
+.panel{display:none;}.panel.on{display:block;}
+
+/* ── CARDS BASE ── */
+.card{background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);padding:20px 22px;}
+.ctitle{font-size:11px;font-weight:700;color:var(--txt3);margin-bottom:16px;text-transform:uppercase;letter-spacing:.09em;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+
+/* ── DASHBOARD ── */
+.dash-header{text-align:center;padding:32px 20px 40px;}
+.dash-header h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;color:var(--txt);line-height:1.2;margin-bottom:10px;}
+.dash-header p{font-size:14px;color:var(--txt2);max-width:420px;margin:0 auto;line-height:1.7;}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.tool-card{background:var(--s2);border:1px solid var(--brd);border-radius:14px;padding:24px 22px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.tool-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(232,78,15,0.04),transparent 60%);pointer-events:none;}
+.tool-card:hover{border-color:var(--brd2);background:var(--s3);transform:translateY(-2px);}
+.tool-card:hover .tcard-ico{background:var(--odim);border-color:var(--obrd);}
+.tcard-ico{width:44px;height:44px;border-radius:10px;background:var(--s4);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;transition:all .2s;}
+.tcard-sup{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px;}
+.tcard-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--txt);margin-bottom:8px;line-height:1.2;}
+.tcard-desc{font-size:12px;color:var(--txt2);line-height:1.6;}
+
+/* ── IA ── */
+.iamodes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.iamode{background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);padding:18px 16px;cursor:pointer;transition:all .18s;}
+.iamode:hover{border-color:var(--brd2);background:var(--s3);}
+.iamode.on{border-color:var(--or);background:var(--odim);}
+.mico{font-size:24px;margin-bottom:10px;}
+.mname{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:4px;}
+.iamode.on .mname{color:var(--or2);}
+.mdesc{font-size:11px;color:var(--txt2);line-height:1.55;}
+.iabox{background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;}
+.iaform{padding:20px 22px;border-bottom:1px solid var(--brd);}
+.iasels{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.iasel{flex:1;min-width:140px;height:40px;background:var(--s3);border:1px solid var(--brd2);border-radius:8px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;padding:0 32px 0 12px;outline:none;transition:all .15s;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%238886A0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.iasel:hover{border-color:var(--obrd);background-color:var(--s4);}
+.iasel:focus{border-color:var(--or);}
+.iasel:focus{border-color:var(--or);}
+.iasel option{background:var(--s2);}
+.chrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.chlbl{font-size:11px;color:var(--txt3);font-weight:700;flex-shrink:0;text-transform:uppercase;letter-spacing:.06em;}
+.ch{font-size:12px;font-weight:600;padding:6px 13px;border-radius:20px;border:1px solid var(--brd2);background:var(--s4);color:var(--txt2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.2);}
+.ch:hover{border-color:var(--obrd);color:var(--or2);background:var(--odim);transform:translateY(-1px);}
+.ch:hover{border-color:var(--obrd);color:var(--or2);background:var(--odim);}
+.iata{width:100%;min-height:80px;background:var(--s3);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:12px 14px;outline:none;resize:none;line-height:1.6;transition:border-color .15s;}
+.iata:focus{border-color:var(--or);}
+.iata::placeholder{color:var(--txt3);}
+.iabot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:10px;}
+.iahint{font-size:11px;color:var(--txt3);}
+.iagbtn{height:38px;padding:0 24px;background:var(--or);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;flex-shrink:0;}
+.iagbtn:hover{background:var(--or2);}
+.iagbtn:disabled{background:var(--s4);color:var(--txt3);cursor:not-allowed;}
+.iares{padding:22px;display:none;}
+.iares.vis{display:block;}
+.iresh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.ireslbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--or2);}
+.icopy{height:30px;padding:0 14px;border:1px solid var(--brd2);background:transparent;border-radius:7px;color:var(--txt2);font-size:11px;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .15s;}
+.icopy:hover{background:var(--s3);color:var(--txt);}
+.iartxt{font-size:13px;color:var(--txt);line-height:1.8;white-space:pre-wrap;background:var(--s3);border:1px solid var(--brd);border-radius:8px;padding:18px;max-height:420px;overflow-y:auto;}
+.iaempty{padding:52px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.iaeico{font-size:36px;opacity:.2;}
+.iaetxt{font-size:13px;color:var(--txt3);line-height:1.7;max-width:280px;}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* ── BIBLIOTECA ── */
+.srow{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--brd);border-radius:9px;padding:0 14px;height:40px;margin-bottom:14px;}
+.srow input{flex:1;background:none;border:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--txt);}
+.srow input::placeholder{color:var(--txt3);}
+.frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.fbtn{height:30px;padding:0 13px;border-radius:7px;border:1px solid var(--brd);background:var(--s2);color:var(--txt2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;}
+.fbtn:hover{border-color:var(--brd2);color:var(--txt);}
+.fbtn.on{background:var(--odim);border-color:var(--obrd);color:var(--or2);}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.rc{background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:12px;}
+.rc:hover{border-color:var(--brd2);background:var(--s3);}
+.rctop{display:flex;align-items:flex-start;gap:11px;}
+.rico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ipdf{background:rgba(255,68,68,.1);}.idoc{background:var(--blubg);}.ixls{background:var(--grnbg);}
+.rname{font-size:13px;font-weight:600;color:var(--txt);line-height:1.4;}
+.rmeta{font-size:11px;color:var(--txt3);margin-top:2px;}
+.rfoot{display:flex;align-items:center;justify-content:space-between;}
+.rtags{display:flex;gap:5px;flex-wrap:wrap;}
+.rtag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;}
+.rtn{background:var(--s4);color:var(--txt2);}
+.rtm{background:var(--wrnbg);color:var(--wrn);}
+.rtl{background:var(--blubg);color:var(--blu);}
+.rdl{font-size:12px;font-weight:700;color:var(--or);background:transparent;padding:5px 12px;border-radius:6px;border:1px solid var(--obrd);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;flex-shrink:0;}
+.rdl:hover{background:var(--odim);color:var(--or2);border-color:var(--or);}
+
+/* ── JUEGOS ── */
+.jgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.jc{background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .2s;}
+.jc:hover{border-color:var(--brd2);background:var(--s3);transform:translateY(-2px);}
+.jch{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;}
+.jcaps{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.jcap{font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--odim);color:var(--or2);}
+.jname{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;color:var(--txt);margin-bottom:6px;}
+.jdesc{font-size:12px;color:var(--txt2);line-height:1.6;margin-bottom:14px;}
+.jpills{display:flex;gap:5px;flex-wrap:wrap;}
+.jp{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;border:1px solid var(--brd2);color:var(--txt3);}
+
+/* ── PLANIFICADOR ── */
+.wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.wtitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;color:var(--txt);}
+.wbtns{display:flex;gap:6px;}
+.wbtn{width:32px;height:32px;border-radius:7px;border:1px solid var(--brd);background:var(--s2);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s;}
+.wbtn:hover{background:var(--s3);color:var(--txt);}
+.wgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
+.dcol{display:flex;flex-direction:column;gap:8px;}
+.dh{text-align:center;padding-bottom:10px;border-bottom:1px solid var(--brd);}
+.dn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);}
+.dnum{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:var(--txt);margin-top:2px;}
+.dnum.today{color:var(--or);}
+.slot{border-radius:8px;padding:10px 11px;cursor:pointer;transition:all .15s;border:1px solid transparent;min-height:60px;}
+.sor{background:var(--odim);border-color:var(--obrd);}
+.sbl{background:var(--blubg);border-color:rgba(74,144,226,.25);}
+.sam{background:var(--wrnbg);border-color:rgba(240,168,48,.25);}
+.sem{background:var(--s2);border:1px dashed var(--s4);display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:11px;font-weight:500;}
+.sem:hover{border-color:var(--obrd);color:var(--or2);}
+.scur{font-size:11px;font-weight:700;margin-bottom:3px;}
+.sor .scur{color:var(--or2);}.sbl .scur{color:var(--blu);}.sam .scur{color:var(--wrn);}
+.sact{font-size:10px;color:var(--txt2);line-height:1.4;}
+.shr{font-size:9px;color:var(--txt3);margin-top:4px;font-weight:500;}
+
+/* ── ALUMNOS ── */
+.elist{display:flex;flex-direction:column;}
+.erow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--brd);}
+.erow:first-child{padding-top:0;}.erow:last-child{border-bottom:none;padding-bottom:0;}
+.eav{width:32px;height:32px;border-radius:50%;background:var(--s4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--txt2);flex-shrink:0;}
+.ein{flex:1;min-width:0;}
+.ename{font-size:13px;font-weight:600;color:var(--txt);}
+.esub{font-size:11px;color:var(--txt3);}
+.nota{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;flex-shrink:0;}
+.na{color:var(--grn);}.nb2{color:var(--wrn);}.nc{color:var(--dng);}
+.adot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dok{background:var(--grn);}.dta{background:var(--wrn);}.dau{background:var(--dng);}
+.rubt{width:100%;border-collapse:collapse;font-size:12px;}
+.rubt th{padding:9px 11px;background:var(--s3);color:var(--txt3);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--brd);text-align:left;}
+.rubt td{padding:10px 11px;border-bottom:1px solid var(--brd);color:var(--txt);line-height:1.5;vertical-align:top;}
+.rubt tr:last-child td{border-bottom:none;}
+.rubt tr:hover td{background:var(--s3);}
+
+/* ── TIMER ── */
+.twrap{display:flex;align-items:flex-start;gap:20px;}
+.tmc{flex:1;}
+.tcenter{display:flex;flex-direction:column;align-items:center;gap:20px;padding:32px 20px;}
+.tring{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;}
+.tring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.tdisp{font-family:'Plus Jakarta Sans',sans-serif;font-size:52px;font-weight:800;color:var(--txt);letter-spacing:-0.5px;z-index:1;line-height:1;}
+.tlbl{font-size:12px;color:var(--txt3);font-weight:500;text-align:center;z-index:1;margin-top:3px;}
+.tctrl{display:flex;gap:10px;}
+.tbig{height:40px;padding:0 24px;border-radius:9px;border:1px solid var(--brd2);background:var(--s3);color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.tbig:hover{background:var(--s4);}
+.tbig.pr{background:var(--or);color:#fff;border-color:var(--or);}
+.tbig.pr:hover{background:var(--or2);}
+.tbig.dn{background:rgba(255,68,68,.1);color:var(--dng);border-color:rgba(255,68,68,.2);}
+.psets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:480px;}
+.ps{background:var(--s2);border:1px solid var(--brd);border-radius:9px;padding:12px 14px;cursor:pointer;transition:all .15s;text-align:center;}
+.ps:hover{border-color:var(--brd2);background:var(--s3);}
+.ps.on{border-color:var(--obrd);background:var(--odim);}
+.pst{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--txt);}
+.ps.on .pst{color:var(--or2);}
+.psl{font-size:10px;color:var(--txt3);font-weight:500;margin-top:2px;}
+.tside{width:230px;display:flex;flex-direction:column;gap:12px;flex-shrink:0;}
+.tipcard{background:var(--wrnbg);border:1px solid rgba(240,168,48,.2);border-radius:var(--r);padding:16px;}
+.tiplbl{font-size:10px;font-weight:700;color:var(--wrn);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;}
+.tiptxt{font-size:12px;color:var(--wrn);line-height:1.65;}
+.stages{display:flex;flex-direction:column;gap:6px;}
+.stage{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--s3);cursor:pointer;transition:all .15s;border:1px solid transparent;}
+.stage:hover{border-color:var(--obrd);background:var(--odim);}
+.stagdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.stagtxt{font-size:12px;font-weight:500;color:var(--txt2);}
+/* ── MOBILE ── */
+@media(max-width:768px){
+  body{flex-direction:column;}
+  .sb{display:none;}
+  .mn{flex:1;min-height:0;padding-bottom:64px;}
+  .tb{padding:0 16px;height:48px;}
+  .ptitle{font-size:13px;}
+  .tbr .xb:first-child{display:none;}
+  .xb.p{font-size:12px;height:28px;padding:0 12px;}
+  .cnt{padding:16px;}
+  .iamodes{grid-template-columns:1fr 1fr;}
+  .iasels{flex-direction:column;}
+  .iasel{min-width:0;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .rgrid,.jgrid{grid-template-columns:1fr;}
+  .twrap{flex-direction:column;}
+  .tside{width:100%;}
+  .wgrid{grid-template-columns:repeat(2,1fr);}
+  .pain-items-grid{grid-template-columns:1fr;}
+  .psets{grid-template-columns:repeat(3,1fr);}
+  .dash-header h1{font-size:20px;}
+  .tools-grid{grid-template-columns:1fr 1fr;}
+  .al-form .card,.curso-form .card{padding:14px;}
+
+  /* BOTTOM NAV */
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    height:60px;
+    background:var(--s1);
+    border-top:1px solid var(--brd);
+    z-index:100;
+    justify-content:space-around;
+    align-items:center;
+    padding:0 4px;
+  }
+  .mn-btn{
+    display:flex;flex-direction:column;align-items:center;
+    gap:3px;padding:6px 10px;border-radius:8px;
+    border:none;background:none;color:var(--txt2);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:9px;font-weight:600;cursor:pointer;
+    transition:all .15s;flex:1;
+  }
+  .mn-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .mn-btn.on{color:var(--or);}
+  .mn-btn span{letter-spacing:.02em;}
+}
+@media(min-width:769px){
+  .mobile-nav{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="brand">
+    <div class="bico">
+      <svg viewBox="0 0 20 20" fill="none">
+        <path d="M10 2L17 6.5V13.5L10 18L3 13.5V6.5L10 2Z" fill="#fff" opacity=".2"/>
+        <path d="M10 5L15 8V12.5L10 15.5L5 12.5V8L10 5Z" fill="#fff"/>
+        <circle cx="10" cy="10" r="2.2" fill="#E84E0F"/>
+      </svg>
+    </div>
+    <div>
+      <div class="bname">EF Studio Masterkit</div>
+      <div class="bsub">Educazione Fisica</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="nb on" id="btn-dashboard" onclick="go('dashboard')">
+      <svg class="ni" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>
+      Inicio
+    </button>
+    <button class="nb" id="btn-ia" onclick="go('ia')">
+      <svg class="ni" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.5 9.5c.7 1.2 4.3 1.2 5 0" stroke-linecap="round"/><circle cx="6" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      Assistente IA
+      <span class="nbg">IA</span>
+    </button>
+
+    <div class="nsep">Contenuto</div>
+    <button class="nb" id="btn-biblioteca" onclick="go('biblioteca')">
+      <svg class="ni" viewBox="0 0 16 16"><path d="M3 2h7l3 3v9H3z"/><path d="M10 2v3h3"/><line x1="5" y1="7" x2="11" y2="7"/><line x1="5" y1="10" x2="8" y2="10"/></svg>
+      Materiali Pronti
+      <span class="nbg">PDF</span>
+    </button>
+    <button class="nb" id="btn-juegos" onclick="go('juegos')">
+      <svg class="ni" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6 8h4M8 6v4"/></svg>
+      Archivio giochi
+      
+    </button>
+
+    <div class="nsep">Gestión</div>
+    <button class="nb" id="btn-planificador" onclick="go('planificador')">
+      <svg class="ni" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="2" y1="6.5" x2="14" y2="6.5"/><line x1="5" y1="1.5" x2="5" y2="4"/><line x1="11" y1="1.5" x2="11" y2="4"/></svg>
+      Pianificatore
+    </button>
+    <button class="nb" id="btn-alumnos" onclick="go('alumnos')">
+      <svg class="ni" viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.5 2.2-4 5-4s5 1.5 5 4"/><circle cx="12" cy="5" r="1.8" opacity=".5"/><path d="M13.5 13c0-1.5-1-2.5-2.5-3" opacity=".5"/></svg>
+      Alunni
+    </button>
+    <button class="nb" id="btn-timer" onclick="go('timer')">
+      <svg class="ni" viewBox="0 0 16 16"><circle cx="8" cy="9" r="5.5"/><path d="M8 6v3l2 1.5"/><line x1="6" y1="1.5" x2="10" y2="1.5"/></svg>
+      Cronometro
+    </button>
+  </nav>
+
+  <div class="sbfoot">
+    <div class="ppill">
+      <div class="pdot"></div>
+      <div class="plbl">Accesso completo attivo</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="mn">
+  <div class="tb">
+    <span class="ptitle" id="ptitle">Pannello principale</span>
+    <div class="tbr">
+      <button class="xb" onclick="go('timer')">⏱ Cronometro</button>
+      <button class="xb p" onclick="go('ia')">+ Genera con IA</button>
+    </div>
+  </div>
+
+  <div class="cnt">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="panel on" id="panel-dashboard">
+      <div class="dash-header">
+        <h1>Cosa ti serve<br>per la tua lezione oggi?</h1>
+        <p>Genera lezioni complete, cerca giochi, costruisci la tua programmazione e valuta i tuoi alunni da un unico posto.</p>
+      </div>
+
+      <div class="tools-grid">
+        <div class="tool-card" onclick="go('ia')">
+          <div class="tcard-ico">🤖</div>
+          <div class="tcard-sup">Intelligenza Artificiale</div>
+          <div class="tcard-name">Assistente IA</div>
+          <div class="tcard-desc">Genera lezioni complete, giochi, rubriche o programmazioni annuali in secondi.</div>
+        </div>
+        <div class="tool-card" onclick="go('biblioteca')">
+          <div class="tcard-ico">📂</div>
+          <div class="tcard-sup">Risorse pronte</div>
+          <div class="tcard-name">Materiali Pronti</div>
+          <div class="tcard-desc">Programmazioni, sequenze didattiche e valutazioni organizzate per livello e contenuto.</div>
+        </div>
+        <div class="tool-card" onclick="go('juegos')">
+          <div class="tcard-ico">🎮</div>
+          <div class="tcard-sup">Archivio attività</div>
+          <div class="tcard-name">Giochi e attività</div>
+          <div class="tcard-desc">Filtra per capacità, livello, materiale disponibile o condizioni di spazio.</div>
+        </div>
+        <div class="tool-card" onclick="go('planificador')">
+          <div class="tcard-ico">📅</div>
+          <div class="tcard-sup">Organizzazione settimanale</div>
+          <div class="tcard-name">Pianificatore</div>
+          <div class="tcard-desc">Organizza le tue lezioni della settimana in modo visivo e scarica le risorse associate.</div>
+        </div>
+        <div class="tool-card" onclick="go('alumnos')">
+          <div class="tcard-ico">👥</div>
+          <div class="tcard-sup">Monitoraggio</div>
+          <div class="tcard-name">Alunni e valutazioni</div>
+          <div class="tcard-desc">Registra presenze, voti e usa le rubriche di valutazione incluse nel pack.</div>
+        </div>
+        <div class="tool-card" onclick="go('timer')">
+          <div class="tcard-ico">⏱</div>
+          <div class="tcard-sup">Per la palestra</div>
+          <div class="tcard-name">Cronometro di lezione</div>
+          <div class="tcard-desc">Timer con preset per ogni momento della lezione. Funziona dallo smartphone.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ IA ═══ -->
+    <div class="panel" id="panel-ia">
+      <div class="iamodes">
+        <div class="iamode on" id="mode-clase" onclick="setM('clase',this)">
+          <div class="mico">📋</div>
+          <div class="mname">Lezione completa</div>
+          <div class="mdesc">Riscaldamento, parte principale e chiusura pronti da usare</div>
+        </div>
+        <div class="iamode" id="mode-juego" onclick="setM('juego',this)">
+          <div class="mico">🎮</div>
+          <div class="mname">Giochi e attività</div>
+          <div class="mdesc">3 opzioni con varianti e organizzazione dello spazio</div>
+        </div>
+        <div class="iamode" id="mode-rubrica" onclick="setM('rubrica',this)">
+          <div class="mico">📊</div>
+          <div class="mname">Rubrica di valutazione</div>
+          <div class="mdesc">Criteri e tabella per abilità o sport</div>
+        </div>
+        <div class="iamode" id="mode-anual" onclick="setM('anual',this)">
+          <div class="mico">📅</div>
+          <div class="mname">Programmazione annuale</div>
+          <div class="mdesc">Anno completo organizzato per quadrimestre</div>
+        </div>
+      </div>
+
+      <div class="iabox">
+        <div class="iaform">
+          <div class="iasels">
+            <select class="iasel" id="ia-n">
+              <option value="">Livello scolastico</option>
+              <option>Infanzia (3-5 anni)</option>
+              <option>1ª e 2ª Primaria</option>
+              <option>3ª e 4ª Primaria</option>
+              <option>4ª e 5ª Primaria</option>
+              <option>1° e 2° Secondaria</option>
+              <option>3° Secondaria</option>
+            </select>
+            <select class="iasel" id="ia-a">
+              <option value="">Numero di alunni</option>
+              <option>Meno di 15</option>
+              <option>15 - 25</option>
+              <option>26 - 35</option>
+              <option>Più di 35</option>
+            </select>
+            <select class="iasel" id="ia-e">
+              <option value="">Spazio disponibile</option>
+              <option>Spazio all aperto</option>
+              <option>Palestra coperta</option>
+              <option>Sala multiuso</option>
+              <option>Aula (giorno di pioggia)</option>
+            </select>
+            <select class="iasel" id="ia-m">
+              <option value="">Materiali disponibili</option>
+              <option>Senza materiali</option>
+              <option>Solo palloni</option>
+              <option>Corde e cerchi</option>
+              <option>Coni e panche</option>
+              <option>Materiale completo</option>
+            </select>
+          </div>
+          <div class="chrow" id="chrow">
+            <span class="chlbl">Esempi rapidi:</span>
+          </div>
+          <textarea class="iata" id="ia-txt" rows="3" placeholder="Descrivi cosa ti serve... es: lezione di giochi cooperativi per la 5ª primaria, 25 alunni, palestra, senza materiali"></textarea>
+          <div class="iabot">
+            <span class="iahint" id="ia-hint">Scegli una modalità e descrivi la tua lezione</span>
+            <button class="iagbtn" id="ia-btn" onclick="generar()">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5z"/></svg>
+              Genera
+            </button>
+          </div>
+        </div>
+
+        <div class="iares" id="ia-res">
+          <div class="iresh">
+            <span class="ireslbl" id="ia-rlbl">Risultato</span>
+            <button class="icopy" onclick="copiar()">Copia testo</button>
+          </div>
+          <div class="iartxt" id="ia-rtxt"></div>
+        </div>
+
+        <div class="iaempty" id="ia-empty">
+          <div class="iaeico">⚡</div>
+          <div class="iaetxt">Scegli una modalità, compila i dati e genera la tua lezione, gioco, rubrica o programmazione in pochi secondi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BIBLIOTECA ═══ -->
+    <div class="panel" id="panel-biblioteca">
+      <div class="srow">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--txt3)" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="15" y2="15"/></svg>
+        <input placeholder="Cerca programmazioni, giochi, valutazioni..." id="bib-q" oninput="flibq(this.value)">
+      </div>
+      <div class="frow">
+        <button class="fbtn on" onclick="flib('todos',this)">Tutti</button>
+        <button class="fbtn" onclick="flib('inicial',this)">Infanzia</button>
+        <button class="fbtn" onclick="flib('primaria',this)">Primaria</button>
+        <button class="fbtn" onclick="flib('secundaria',this)">Secondaria</button>
+        <button class="fbtn" onclick="flib('planif',this)">Programmazioni annuali</button>
+        <button class="fbtn" onclick="flib('juegos',this)">Giochi</button>
+        <button class="fbtn" onclick="flib('deporte',this)">Regolamenti</button>
+        <button class="fbtn" onclick="flib('expresion',this)">Espressione corporea</button>
+        <button class="fbtn" onclick="flib('inclusion',this)">Inclusione</button>
+        <button class="fbtn" onclick="flib('lluvia',this)">🌧 Pioggia / Palestra</button>
+        <button class="fbtn" onclick="flib('sinmat',this)">Senza materiali</button>
+      </div>
+      <div class="rgrid" id="rgrid"></div>
+    </div>
+
+    <!-- ═══ JUEGOS ═══ -->
+    <div class="panel" id="panel-juegos">
+      <div class="srow">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--txt3)" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="15" y2="15"/></svg>
+        <input id="jsearch" placeholder="Cerca per nome, capacità o condizione..." oninput="filtrarJuegos()">
+      </div>
+      <div class="frow" id="jfilters">
+        <button class="fbtn on" onclick="filterJ('todos',this)">Tutti</button>
+        <button class="fbtn" onclick="filterJ('coord',this)">Coordinazione</button>
+        <button class="fbtn" onclick="filterJ('resist',this)">Resistenza</button>
+        <button class="fbtn" onclick="filterJ('coop',this)">Cooperazione</button>
+        <button class="fbtn" onclick="filterJ('predeporte',this)">Presportivi</button>
+        <button class="fbtn" onclick="filterJ('expresion',this)">Espressione corporea</button>
+        <button class="fbtn" onclick="filterJ('sinmat',this)">Senza materiali</button>
+        <button class="fbtn" onclick="filterJ('inicial',this)">Infanzia</button>
+        <button class="fbtn" onclick="filterJ('secundaria',this)">Secondaria</button>
+      </div>
+      <div class="jgrid" id="jgrid"></div>
+      <div id="jdetail" style="display:none;margin-top:16px;"></div>
+    </div>
+
+    <!-- ═══ PLANIFICADOR ═══ -->
+    <div class="panel" id="panel-planificador">
+      <div class="wnav">
+        <div class="wtitle">Pianificatore settimanale</div>
+        <div class="wbtns">
+          <button class="wbtn">←</button>
+          <button class="wbtn">Oggi</button>
+          <button class="wbtn">→</button>
+        </div>
+      </div>
+      <div class="wgrid">
+        <div class="dcol">
+          <div class="dh"><div class="dn">Lunedì</div><div class="dnum today">7</div></div>
+          <div class="slot sor"><div class="scur">2ª Primaria B</div><div class="sact">Giochi cooperativi</div><div class="shr">10:00 · Palestra</div></div>
+          <div class="slot sbl"><div class="scur">1ª Secondaria</div><div class="sact">Sport collettivi</div><div class="shr">14:00 · Palestra</div></div>
+        </div>
+        <div class="dcol">
+          <div class="dh"><div class="dn">Martedì</div><div class="dnum">8</div></div>
+          <div class="slot sam"><div class="scur">Infanzia Rossa</div><div class="sact">Circuito psicomotorio</div><div class="shr">09:00 · Palestra</div></div>
+          <div class="slot sem">+ Aggiungi lezione</div>
+        </div>
+        <div class="dcol">
+          <div class="dh"><div class="dn">Mercoledì</div><div class="dnum">9</div></div>
+          <div class="slot sor"><div class="scur">3ª Primaria A</div><div class="sact">Coordinazione</div><div class="shr">08:30 · Palestra</div></div>
+          <div class="slot sbl"><div class="scur">2ª Secondaria</div><div class="sact">Condizionamento fisico</div><div class="shr">13:00 · Palestra</div></div>
+        </div>
+        <div class="dcol">
+          <div class="dh"><div class="dn">Giovedì</div><div class="dnum">10</div></div>
+          <div class="slot sam"><div class="scur">Infanzia Blu</div><div class="sact">Espressione corporea</div><div class="shr">09:00 · Palestra</div></div>
+          <div class="slot sor"><div class="scur">5ª Primaria</div><div class="sact">Presportivi</div><div class="shr">11:00 · Palestra</div></div>
+        </div>
+        <div class="dcol">
+          <div class="dh"><div class="dn">Venerdì</div><div class="dnum">11</div></div>
+          <div class="slot sbl"><div class="scur">3ª Secondaria</div><div class="sact">Progetti</div><div class="shr">10:00 · Palestra</div></div>
+          <div class="slot sem">+ Aggiungi lezione</div>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="card" style="padding:14px 18px;"><div style="font-size:10px;font-weight:700;color:var(--or2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em;">Risorsa suggerita</div><div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:3px;">50 giochi cooperativi senza materiali</div><div style="font-size:11px;color:var(--txt3);">PDF · Primaria</div></div>
+        <div class="card" style="padding:14px 18px;"><div style="font-size:10px;font-weight:700;color:var(--wrn);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em;">Risorsa suggerita</div><div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:3px;">Circuiti psicomotori — Infanzia</div><div style="font-size:11px;color:var(--txt3);">PDF · 8 pagine</div></div>
+        <div class="card" style="padding:14px 18px;"><div style="font-size:10px;font-weight:700;color:var(--blu);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em;">Risorsa suggerita</div><div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:3px;">Sequenza di condizionamento fisico</div><div style="font-size:11px;color:var(--txt3);">DOC · Secondaria</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ ALUMNOS ═══ -->
+    <div class="panel" id="panel-alumnos">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <select id="curso-sel" onchange="cambiarCurso()" style="height:36px;background:var(--s2);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:0 12px;outline:none;min-width:160px;">
+            <option value="">Seleziona corso...</option>
+          </select>
+          <button onclick="showAddCurso()" style="height:36px;padding:0 14px;background:var(--s3);border:1px solid var(--brd2);border-radius:8px;color:var(--txt2);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">+ Nuovo corso</button>
+        </div>
+        <button id="btn-add-al" onclick="showAddAlumno()" style="height:36px;padding:0 16px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:none;">+ Aggiungi alunno</button>
+      </div>
+
+      <div id="al-form" style="display:none;margin-bottom:14px;">
+        <div class="card" style="padding:16px 18px;">
+          <div style="font-size:12px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;" id="al-form-title">Nuovo alunno</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="al-nombre" placeholder="Nome e cognome" style="flex:2;min-width:160px;height:36px;background:var(--s3);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:0 12px;outline:none;">
+            <button onclick="guardarAlumno()" style="height:36px;padding:0 18px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Salva</button>
+            <button onclick="cerrarForm()" style="height:36px;padding:0 14px;background:var(--s3);border:1px solid var(--brd2);border-radius:8px;color:var(--txt2);font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Annulla</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="curso-form" style="display:none;margin-bottom:14px;">
+        <div class="card" style="padding:16px 18px;">
+          <div style="font-size:12px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;">Nuovo corso</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="curso-nombre" placeholder="Es: 3ª Primaria B" style="flex:2;min-width:160px;height:36px;background:var(--s3);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:0 12px;outline:none;">
+            <button onclick="guardarCurso()" style="height:36px;padding:0 18px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Crea</button>
+            <button onclick="cerrarCursoForm()" style="height:36px;padding:0 14px;background:var(--s3);border:1px solid var(--brd2);border-radius:8px;color:var(--txt2);font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Annulla</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="al-empty" class="card" style="padding:40px 20px;text-align:center;">
+        <div style="font-size:32px;opacity:.2;margin-bottom:10px;">👥</div>
+        <div style="font-size:14px;font-weight:600;color:var(--txt);margin-bottom:6px;">Crea il tuo primo corso</div>
+        <div style="font-size:12px;color:var(--txt3);line-height:1.6;">Fai clic su "Nuovo corso" per iniziare ad aggiungere i tuoi alunni.<br>Ogni insegnante ha il proprio registro — i dati vengono salvati sul tuo dispositivo.</div>
+      </div>
+
+      <div id="al-table" style="display:none;">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div class="ctitle" id="al-curso-title" style="margin-bottom:0;">Alunni</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:11px;color:var(--txt3);" id="al-count"></span>
+              <button onclick="tomarAsistencia()" style="height:28px;padding:0 12px;background:var(--s4);border:1px solid var(--brd2);border-radius:6px;color:var(--txt2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Registra presenze</button>
+              <button onclick="borrarCurso()" style="height:28px;padding:0 10px;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2);border-radius:6px;color:var(--dng);font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Elimina corso</button>
+            </div>
+          </div>
+          <div id="al-list"></div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══ TIMER ═══ -->
+    <div class="panel" id="panel-timer">
+      <div class="twrap">
+        <div class="tmc card">
+          <div class="tcenter">
+            <div class="tring">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="88" fill="none" stroke="var(--s4)" stroke-width="7"/>
+                <circle cx="100" cy="100" r="88" fill="none" stroke="var(--or)" stroke-width="7"
+                  stroke-dasharray="553" stroke-dashoffset="0" stroke-linecap="round"
+                  id="trc" style="transition:stroke-dashoffset 1s linear;"/>
+              </svg>
+              <div>
+                <div class="tdisp" id="tdisp">02:00</div>
+                <div class="tlbl" id="tlbl">Pronto per iniziare</div>
+              </div>
+            </div>
+            <div class="tctrl">
+              <button class="tbig dn" onclick="tReset()">Riavvia</button>
+              <button class="tbig pr" id="tstart" onclick="tToggle()">Avvia</button>
+            </div>
+            <div class="psets">
+              <div class="ps" onclick="tSet(60,'Pausa attiva')"><div class="pst">1:00</div><div class="psl">Pausa activa</div></div>
+              <div class="ps on" onclick="tSet(120,'Riscaldamento')"><div class="pst">2:00</div><div class="psl">Riscaldamento</div></div>
+              <div class="ps" onclick="tSet(300,'Attività centrale')"><div class="pst">5:00</div><div class="psl">Actividad</div></div>
+              <div class="ps" onclick="tSet(600,'Gioco principale')"><div class="pst">10:00</div><div class="psl">Juego</div></div>
+              <div class="ps" onclick="tSet(900,'Circuito')"><div class="pst">15:00</div><div class="psl">Circuito</div></div>
+              <div class="ps" onclick="tSet(1800,'Clase entera')"><div class="pst">30:00</div><div class="psl">Clase entera</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tside">
+          <div class="card" style="padding:16px 18px;">
+            <div class="ctitle">Etapas rápidas</div>
+            <div class="stages">
+              <div class="stage" onclick="tSet(120,'Riscaldamento')"><div class="stagdot" style="background:var(--grn)"></div><div class="stagtxt">Riscaldamento · 2 min</div></div>
+              <div class="stage" onclick="tSet(600,'Parte principale')"><div class="stagdot" style="background:var(--or)"></div><div class="stagtxt">Parte principale · 10 min</div></div>
+              <div class="stage" onclick="tSet(300,'Juego o circuito')"><div class="stagdot" style="background:var(--blu)"></div><div class="stagtxt">Juego / circuito · 5 min</div></div>
+              <div class="stage" onclick="tSet(180,'Ritorno alla calma')"><div class="stagdot" style="background:var(--txt3)"></div><div class="stagtxt">Ritorno alla calma · 3 min</div></div>
+            </div>
+          </div>
+          <div class="tipcard">
+            <div class="tiplbl">Consejo del día</div>
+            <div class="tiptxt">En juegos cooperativos, asegurate de que cada alumno tenga un rol claro antes de arrancar. Reduce el caos y potencia el aprendizaje.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cnt -->
+</div><!-- /mn -->
+
+<script>
+// ─── NAVEGACIÓN ───────────────────────────────────────
+var titles = {
+  dashboard:'Pannello principale', ia:'Assistente IA',
+  biblioteca:'Materiali Pronti', juegos:'Archivio giochi',
+  planificador:'Pianificatore settimanale', alumnos:'Alunni e valutazioni',
+  timer:'Cronometro di lezione'
+};
+
+function go(id) {
+  var panels = document.querySelectorAll('.panel');
+  for(var i=0;i<panels.length;i++) panels[i].classList.remove('on');
+  document.getElementById('panel-'+id).classList.add('on');
+  var btns = document.querySelectorAll('.nb');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+  var b = document.getElementById('btn-'+id);
+  if(b) b.classList.add('on');
+  document.getElementById('ptitle').textContent = titles[id] || id;
+  // sync mobile nav
+  document.querySelectorAll('.mn-btn').forEach(function(b){ b.classList.remove('on'); });
+  var mb = document.getElementById('mb-'+id);
+  if(mb) mb.classList.add('on');
+}
+
+// ─── ASISTENTE IA ──────────────────────────────────────
+var mIA = 'clase';
+var modes = {
+  clase: {
+    chips:['Giochi cooperativi senza materiali','Coordinazione allaperto','Circuito con coni','Resistenza aerobica','Espressione corporea in palestra'],
+    hint:'Descrivi il tipo di lezione, livello e condizioni dello spazio',
+    label:'Lezione completa generata',
+    prompt: function(t,n,a,e,m){
+      return 'Sei un esperto di Educazione Fisica scolastica italiana. Genera un PIANO DI LEZIONE completo e pronto da usare.\n\nDATI: '+t+(n?'. Livello: '+n:'')+(a?'. Alunni: '+a:'')+(e?'. Spazio: '+e:'')+(m?'. Materiali: '+m:'')+'.\n\nNOME DELLA LEZIONE: [nome motivante]\nLIVELLO / CLASSE: [livello]\nDURATA TOTALE: [minuti]\nCAPACITÀ: [2-3 capacità motorie]\nMATERIALI: [lista]\n\n━━━ RISCALDAMENTO ([X] min) ━━━\n[Descrizione passo per passo, organizzazione e consegne esatte]\n\n━━━ PARTE PRINCIPALE ([X] min) ━━━\n[Attività centrale: organizzazione dello spazio, regole, consegne per l\'insegnante, come regolare la difficoltà]\n\n━━━ RITORNO ALLA CALMA ([X] min) ━━━\n[Attività di chiusura e riflessione]\n\n━━━ CRITERI DI OSSERVAZIONE ━━━\n[Cosa osservare negli alunni]\n\n━━━ ADATTAMENTI ━━━\nPer alunni con difficoltà: [concreto]\nPer alunni avanzati: [concreto]\nSe piove o non c\'è palestra: [alternativa]\n\nSolo il piano, senza testo aggiuntivo. Sii ultra-concreto e pratico.';
+    }
+  },
+  juego: {
+    chips:['Inseguimento e reazione','Avvio all handball','Cooperazione senza materiali','Espressione con musica','Equilibrio e coordinazione'],
+    hint:'Descrivi quale capacità lavorare e il contesto',
+    label:'3 giochi e attivita generati',
+    prompt: function(t,n,a,e,m){
+      return 'Sei un esperto di giochi motori per l\'Educazione Fisica scolastica. Genera 3 giochi o attività pronti da usare.\n\nRICHIESTA: '+t+(n?'. Livello: '+n:'')+(a?'. Alunni: '+a:'')+(e?'. Spazio: '+e:'')+(m?'. Materiali: '+m:'')+'.\n\n▶ GIOCO 1: [nome]\nCapacità principale: [...] | Durata: [min]\nOrganizzazione: [come si posizionano nello spazio]\nSviluppo: [passi chiari come li spiegheresti agli alunni]\nVariante facile: [...]\nVariante difficile: [...]\n\n▶ GIOCO 2: [stesso formato]\n\n▶ GIOCO 3: [stesso formato]\n\nSolo i 3 giochi, senza testo aggiuntivo.';
+    }
+  },
+  rubrica: {
+    chips:['Valutazione della resistenza','Abilita nel calcio','Coordinazione ed equilibrio','Lavoro di squadra','Test di condizione fisica'],
+    hint:'Descrivi cosa vuoi valutare e a che livello',
+    label:'Rubrica di valutazione generata',
+    prompt: function(t,n,a,e,m){
+      return 'Sei un esperto di valutazione dell\'Educazione Fisica scolastica italiana. Genera una RUBRICA DI VALUTAZIONE completa e pronta da stampare.\n\nRICHIESTA: '+t+(n?'. Livello: '+n:'')+'.\n\nRUBRICA: [nome]\nLIVELLO: [livello] | CONTENUTO: [cosa si valuta]\n\nCRITERIO 1 — [nome]\n• Eccellente (9-10): [descrizione concreta e osservabile]\n• Buono (7-8): [descrizione]\n• Sufficiente (6): [descrizione]\n• Insufficiente (4-5): [descrizione]\n\nCRITERIO 2 — [stesso formato]\n\nCRITERIO 3 — [stesso formato]\n\nCRITERIO 4 — [stesso formato]\n\nVALUTAZIONE: media dei criteri\nOSSERVAZIONI: _______________\n\nSolo la rubrica, senza testo aggiuntivo.';
+    }
+  },
+  anual: {
+    chips:['Primaria completa 2h/settimana','Secondaria con enfasi sugli sport','Infanzia gioco e movimento','Scuola rurale senza palestra','Secondaria salute e abitudini'],
+    hint:'Descrivi livello, ore settimanali e contesto della tua scuola',
+    label:'Programmazione annuale generata',
+    prompt: function(t,n,a,e,m){
+      return 'Sei un esperto di pianificazione curriculare di Educazione Fisica italiana. Genera una PROGRAMMAZIONE ANNUALE completa.\n\nDATI: '+t+(n?'. Livello: '+n:'')+(e?'. Contesto: '+e:'')+'.\n\nPROGRAMMAZIONE ANNUALE — EDUCAZIONE FISICA\nLivello / Classe: [...] | Ore settimanali: [...] | Anno: 2025\n\nFONDAMENTO PEDAGOGICO: [2-3 frasi sull approccio]\n\nOBIETTIVI GENERALI: 1.[...] 2.[...] 3.[...]\n\n━━━ PRIMO QUADRIMESTRE (Settembre–Gennaio) ━━━\nAssi: [...] | Contenuti: [...] | Capacita: [...] | Valutazione: [...]\n\n━━━ SECONDO QUADRIMESTRE (Febbraio–Giugno) ━━━\n[stesso formato]\n\nCRITERI DI VALUTAZIONE: [con peso percentuale]\nSTRATEGIE METODOLOGICHE: [2-3 strategie chiave]\nRISORSE E MATERIALI: [lista realistica per contesto]\n\nSolo la programmazione, senza testo aggiuntivo.';
+    }
+  }
+};
+
+function setMB(id) {
+  document.querySelectorAll('.mn-btn').forEach(function(b){ b.classList.remove('on'); });
+  var el = document.getElementById(id);
+  if(el) el.classList.add('on');
+}
+
+function setM(m, el) {
+  mIA = m;
+  var all = document.querySelectorAll('.iamode');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('on');
+  el.classList.add('on');
+  var cfg = modes[m];
+  var cr = document.getElementById('chrow');
+  cr.innerHTML = '<span class="chlbl">Esempi rapidi:</span>';
+  cfg.chips.forEach(function(c){
+    var b = document.createElement('button');
+    b.className = 'ch'; b.textContent = c;
+    b.onclick = function(){ document.getElementById('ia-txt').value = c; };
+    cr.appendChild(b);
+  });
+  document.getElementById('ia-hint').textContent = cfg.hint;
+  document.getElementById('ia-res').classList.remove('vis');
+  document.getElementById('ia-empty').style.display = 'flex';
+}
+
+// init chips
+setM('clase', document.getElementById('mode-clase'));
+
+async function generar() {
+  var txt = document.getElementById('ia-txt').value.trim();
+  if(!txt){ document.getElementById('ia-txt').focus(); return; }
+  var n = document.getElementById('ia-n').value;
+  var a = document.getElementById('ia-a').value;
+  var e = document.getElementById('ia-e').value;
+  var m = document.getElementById('ia-m').value;
+
+  var btn = document.getElementById('ia-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Generando...';
+
+  document.getElementById('ia-empty').style.display = 'none';
+  var res = document.getElementById('ia-res');
+  var rt = document.getElementById('ia-rtxt');
+  res.classList.add('vis');
+  rt.textContent = '';
+  document.getElementById('ia-rlbl').textContent = modes[mIA].label;
+
+  try {
+    var r = await fetch('/.netlify/functions/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: modes[mIA].prompt(txt,n,a,e,m) }]
+      })
+    });
+    var d = await r.json();
+    if (d.content) {
+      rt.textContent = d.content.map(function(b){ return b.text||''; }).join('');
+    } else {
+      rt.textContent = 'Error: ' + (d.error ? JSON.stringify(d.error) : 'Respuesta vacía');
+    }
+  } catch(err) {
+    rt.textContent = 'Errore di connessione: ' + err.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5z"/></svg> Genera di nuovo';
+}
+
+function copiar() {
+  var txt = document.getElementById('ia-rtxt').textContent;
+  navigator.clipboard.writeText(txt).then(function(){
+    var b = document.querySelector('.icopy');
+    b.textContent = 'Copiato!';
+    setTimeout(function(){ b.textContent = 'Copia testo'; }, 2000);
+  });
+}
+
+// ─── BIBLIOTECA ────────────────────────────────────────
+var F = {
+  planif:    'https://drive.google.com/drive/folders/1Gro8RcJSM0KekF7u5FwI7bhYviT7TAhe',
+  juegos:    'https://drive.google.com/drive/folders/1mDFFXqKgfO9TBNL2JD9aaJMJhMHf6nbU',
+  primaria:  'https://drive.google.com/drive/folders/1xdJdK-0ZUHjKI6xaO065eme9-zLvC1jC',
+  secund:    'https://drive.google.com/drive/folders/16pqzZIPySHJsNHG3O-_I-LEv1XKjSJqf',
+  yoga_n:    'https://drive.google.com/drive/folders/1-AFifZO9lL0yoJdsVcfV2pruI8ZJCgoM',
+  yoga_e:    'https://drive.google.com/drive/folders/1ZuC9P8tG4w_QDJUhZ4HQGi0eeVoCItxb',
+  pack:      'https://drive.google.com/drive/folders/1-ZIKTfyo5u7XaBiBAqi5yCZSRe8Jh9Op',
+};
+
+var rec = [
+
+  // ══════════════════════════════════════════════════
+  // PLANIFICADORES ANUALES
+  // ══════════════════════════════════════════════════
+  {n:'Programmatore Annuale — Giochi Tecnici',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria'],tags:['Programmazione'],mat:'Senza materiali',desc:'Programmazione annuale completa con progressioni di giochi tecnici per trimestre.'},
+  {n:'Programmatore Annuale — Circuiti Psicomotori',t:'pdf',url:F.planif,cat:['planif','primaria','inicial'],tags:['Programmazione','Circuiti'],mat:'Varia',desc:'Programmatore annuale di circuiti psicomotori con diagrammi e valutazione.'},
+  {n:'Programmatore Annuale — Abilità di Coordinazione',t:'pdf',url:F.planif,cat:['planif','primaria'],tags:['Programmazione','Coordinazione'],mat:'Senza materiali',desc:'Programmazione annuale de coordinación motriz con secuencia de contenidos.'},
+  {n:'Programmatore Annuale — Espressione Ritmica e Attività Musicali',t:'pdf',url:F.planif,cat:['planif','primaria','inicial','expresion','lluvia'],tags:['Programmazione','Espressione'],mat:'Senza materiali',desc:'Programmatore annuale di espressione ritmica integrata con attività musicali.'},
+  {n:'Programmatore Annuale — Presport Adattati',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria'],tags:['Programmazione','Predeportes'],mat:'Palloni',desc:'Programmazione annuale de iniciación deportiva adaptada por nivel y grupo.'},
+  {n:'Programmatore Annuale — Espressione Corporea, Creatività e Abitudini Salutari',t:'pdf',url:F.planif,cat:['planif','primaria','inicial','expresion','lluvia'],tags:['Programmazione','Espressione'],mat:'Senza materiali',desc:'Programmatore che integra espressione corporea con educazione alla salute.'},
+  {n:'Giochi Alternativi — Programmazione Annuale',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria','sinmat'],tags:['Programmazione','Giochi'],mat:'Senza materiali',desc:'Programmazione annuale con giochi non convenzionali e alternativi allo sport tradizionale.'},
+  {n:'Programmatore Annuale — Condizionamento Fisico con e senza Attrezzatura',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria'],tags:['Programmazione','Fisico'],mat:'Con e senza',desc:'Programmatore annuale di condizionamento fisico con versioni attrezzate e senza.'},
+  {n:'Programmatore Annuale — Actividades al Aire Libre y en la Naturaleza',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria'],tags:['Programmazione','Aire libre'],mat:'Senza materiali',desc:'Programmazione annuale de actividades en entornos naturales y al aire libre.'},
+  {n:'Calcio — Programmatore Annuale',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria','deporte'],tags:['Programmazione','Fútbol'],mat:'Pallone',desc:'Programmazione annuale completa di calcio con sequenze tecniche, tattiche e valutazione.'},
+  {n:'Programmatore Annuale — Pallacanestro',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria','deporte'],tags:['Programmazione','Basket'],mat:'Pallone',desc:'Programmazione annuale di pallacanestro con progressioni tecniche e giochi presportivi.'},
+  {n:'Progetti di Tornei Interni',t:'pdf',url:F.planif,cat:['planif','primaria','secundaria','deporte'],tags:['Programmazione','Torneos'],mat:'Varia',desc:'Guía completa para organizar torneos intra-escolares. Incluye fixtures, reglamentos y planillas.'},
+  {n:'Programmazione Quincenal — Voley y Handball 6° Secundaria',t:'doc',url:F.planif,cat:['planif','secundaria','deporte'],tags:['Programmazione','Secundaria'],mat:'Pallone',desc:'Programmazione quincenal de voley y handball para 6° año de secundaria.'},
+
+  // ══════════════════════════════════════════════════
+  // JUEGOS
+  // ══════════════════════════════════════════════════
+  {n:'Giochi Cooperativi senza Competizione — Infanzia',t:'pdf',url:F.juegos,cat:['inicial','primaria','juegos','sinmat','lluvia'],tags:['Inicial','Primaria'],mat:'Senza materiali',desc:'Raccolta di giochi cooperativi senza eliminazione, focalizzati sulla partecipazione e inclusione.'},
+  {n:'33 Giochi Sensoriali e di Conoscenza Corporea',t:'pdf',url:F.juegos,cat:['inicial','primaria','juegos','sinmat','lluvia'],tags:['Inicial','Primaria'],mat:'Senza materiali',desc:'Giochi per lo sviluppo sensoriale e la consapevolezza corporea nella scuola dell infanzia e primo ciclo.'},
+  {n:'215 Giochi per Educazione Fisica in Primaria',t:'pdf',url:F.juegos,cat:['primaria','juegos','sinmat'],tags:['Primaria'],mat:'Senza materiali',desc:'Mega raccolta di 215 giochi classificati per capacità, livello di difficoltà e spazio richiesto.'},
+  {n:'Fichero General de Educazione Fisica',t:'pdf',url:F.juegos,cat:['primaria','secundaria','juegos'],tags:['Primaria','Secondaria'],mat:'Varia',desc:'Fichero completo de actividades y juegos organizados por área de contenido.'},
+  {n:'Giochi di Lateralità',t:'pdf',url:F.juegos,cat:['primaria','inicial','juegos','sinmat'],tags:['Inicial','Primaria'],mat:'Senza materiali',desc:'Attività specifiche per lo sviluppo della lateralità e dello schema corporeo.'},
+  {n:'Giochi Tradizionali — Versione Completa',t:'pdf',url:F.juegos,cat:['primaria','secundaria','juegos','sinmat'],tags:['Primaria','Secondaria'],mat:'Senza materiali',desc:'Raccolta di giochi popolari e tradizionali italiani.'},
+  {n:'I Giochi nell Educazione Fisica (12-14 anni)',t:'pdf',url:F.juegos,cat:['secundaria','juegos','sinmat'],tags:['Secondaria'],mat:'Senza materiali',desc:'Quadro teorico-pratico sull uso del gioco negli adolescenti dai 12 ai 14 anni.'},
+  {n:'500 Giochi e Tecniche di Animazione — Primaria e Infanzia',t:'pdf',url:F.juegos,cat:['primaria','inicial','juegos','sinmat'],tags:['Primaria','Inicial'],mat:'Senza materiali',desc:'Raccolta di 500 attività ludiche e tecniche di animazione di gruppo.'},
+  {n:'PRO — Archivio Giochi 2018',t:'pdf',url:F.juegos,cat:['primaria','secundaria','juegos'],tags:['Primaria','Secondaria'],mat:'Varia',desc:'Archivio professionale con centinaia di giochi aggiornati con varianti e indicazioni didattiche.'},
+
+  // ══════════════════════════════════════════════════
+  // PRIMARIA
+  // ══════════════════════════════════════════════════
+  {n:'Ed. Fisica 1ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['1° Primaria'],mat:'Varia',desc:'Libro di educazione fisica per la 1ª classe con attività, sequenze e valutazione.'},
+  {n:'Ed. Fisica 2ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['2° Primaria'],mat:'Varia',desc:'Libro completo di Ed. Fisica per la 2ª classe con contenuti per unità e attività.'},
+  {n:'Ed. Fisica 3ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['3° Primaria'],mat:'Varia',desc:'Libro di Ed. Fisica per la 3ª classe con giochi, coordinazione e valutazioni.'},
+  {n:'Ed. Fisica 4ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['4° Primaria'],mat:'Varia',desc:'Libro per la 4ª classe con giochi presportivi, capacità fisiche e sequenze.'},
+  {n:'Ed. Fisica 5ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['5° Primaria'],mat:'Varia',desc:'Libro per la 5ª classe con sport, abilità motorie e proposte di valutazione.'},
+  {n:'Ed. Fisica 6ª Classe — Libro completo',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['6° Primaria'],mat:'Varia',desc:'Libro per la 5ª classe con contenuti di chiusura della primaria e passaggio alla secondaria.'},
+  {n:'5ª Classe — Attività di Ed. Fisica',t:'pdf',url:F.primaria,cat:['primaria','secundaria'],tags:['5ª Classe'],mat:'Varia',desc:'Materiale di attività per la 5ª classe, ponte tra primaria e secondaria.'},
+  {n:'Programmazione Primaria — Houssay',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['Primaria','Programmazione'],mat:'Senza materiali',desc:'Modelo de planificación anual para primaria basado en el enfoque Houssay.'},
+  {n:'Programmatore 1° Ciclo — 1ª Classe',t:'pdf',url:F.primaria,cat:['primaria','planif'],tags:['1° Primaria'],mat:'Senza materiali',desc:'Programmatore specifico per la 1ª classe. Con obiettivi e attività suggerite.'},
+  {n:'Allenamento per Bambini',t:'pdf',url:F.primaria,cat:['primaria','sinmat'],tags:['Primaria'],mat:'Senza materiali',desc:'Guía de entrenamiento físico progresivo adaptado para niños en edad escolar.'},
+
+  // ══════════════════════════════════════════════════
+  // SECUNDARIA
+  // ══════════════════════════════════════════════════
+  {n:'Secondaria Attiva — Ed. Fisica 1°',t:'pdf',url:F.secund,cat:['secundaria','planif'],tags:['Secondaria'],mat:'Varia',desc:'Libro completo di Ed. Fisica per il 1° anno della secondaria con attività e progetti.'},
+  {n:'Programmazione 1° e 2° — Ed. Fisica',t:'pdf',url:F.secund,cat:['secundaria','planif'],tags:['Secondaria'],mat:'Senza materiali',desc:'Programmazione curricolare per il 1° e 2° anno della secondaria allineata al curricolo nazionale.'},
+  {n:'Ed. Fisica Secondaria — Indirizzo',t:'pdf',url:F.secund,cat:['secundaria','planif'],tags:['Secondaria'],mat:'Varia',desc:'Materiale completo per la secondaria con programmazioni, attività e criteri di valutazione.'},
+  {n:'Actividad Física y Salud',t:'pdf',url:F.secund,cat:['secundaria','sinmat','lluvia'],tags:['Secondaria','Salute'],mat:'Senza materiali',desc:'Contenutos teórico-prácticos de actividad física orientados a la promoción de la salud.'},
+  {n:'Guía de Actividad Física',t:'pdf',url:F.secund,cat:['secundaria','sinmat'],tags:['Secondaria'],mat:'Senza materiali',desc:'Guía práctica de actividad física para docentes de nivel secundario.'},
+  {n:'Guía Práctica de Nutrición',t:'pdf',url:F.secund,cat:['secundaria','sinmat','lluvia'],tags:['Secondaria','Salute'],mat:'Senza materiali',desc:'Contenutos de nutrición deportiva y hábitos alimentarios para integrar en las clases.'},
+  {n:'Ed. Fisica e la Salute a Scuola',t:'pdf',url:F.secund,cat:['secundaria','sinmat','lluvia'],tags:['Secondaria','Salute'],mat:'Senza materiali',desc:'Quadro teorico sulla relazione tra educazione fisica e salute in ambito scolastico.'},
+  {n:'Globalización del Deporte y Desarrollo',t:'pdf',url:F.secund,cat:['secundaria','lluvia'],tags:['Secondaria'],mat:'Senza materiali',desc:'Contenuto conceptual sobre el deporte como fenómeno social y cultural globalizado.'},
+  {n:'Curso de RCP',t:'pdf',url:F.secund,cat:['secundaria','sinmat','lluvia'],tags:['Secondaria','Salute'],mat:'Senza materiali',desc:'Protocolo y práctica de reanimación cardiopulmonar. Ideal para incluir en EF secundaria.'},
+  {n:'341 Giochi Popolari',t:'pdf',url:F.secund,cat:['secundaria','primaria','juegos','sinmat'],tags:['Secundaria','Primaria'],mat:'Senza materiali',desc:'Raccolta di 341 giochi popolari italiani classificati per tipo e regione.'},
+  {n:'Archivio Giochi — Secondaria',t:'pdf',url:F.secund,cat:['secundaria','juegos','sinmat'],tags:['Secondaria'],mat:'Senza materiali',desc:'Archivio giochi pensato per la scuola secondaria con varianti e adattamenti.'},
+
+  // ══════════════════════════════════════════════════
+  // REGLAMENTOS (dentro de Secundaria)
+  // ══════════════════════════════════════════════════
+  {n:'Regolamento del Calcio',t:'pdf',url:F.secund,cat:['secundaria','deporte'],tags:['Sport','Calcio'],mat:'Pallone',desc:'Regolamento ufficiale del calcio adattato per uso scolastico e tornei interni.'},
+  {n:'Reglamento de Handball',t:'pdf',url:F.secund,cat:['secundaria','deporte'],tags:['Deporte','Handball'],mat:'Pallone',desc:'Reglamento oficial de handball para nivel secundario con reglas simplificadas.'},
+  {n:'Regolamento Basket in Carrozzina',t:'pdf',url:F.secund,cat:['secundaria','deporte','inclusion'],tags:['Inclusione','Basket'],mat:'Sedia + Pallone',desc:'Regolamento adattato — ideale per lavorare sull inclusione in classe.'},
+  {n:'Reglamento de Cestoball',t:'pdf',url:F.secund,cat:['secundaria','deporte'],tags:['Deporte','Cestoball'],mat:'Pallone',desc:'Reglamento del cestoball, deporte autóctono argentino de origen escolar.'},
+  {n:'Reglamento de Goalball',t:'pdf',url:F.secund,cat:['secundaria','deporte','inclusion'],tags:['Inclusión','Goalball'],mat:'Pallone especial',desc:'Reglamento de goalball, deporte paralímpico. Para trabajar inclusión y empatía.'},
+  {n:'Reglamento de Competencia Escolar',t:'pdf',url:F.secund,cat:['secundaria','deporte'],tags:['Deporte','Competencia'],mat:'Senza materiali',desc:'Reglamentación general para torneos y competencias deportivas escolares.'},
+
+  // ══════════════════════════════════════════════════
+  // INICIAL (en carpeta pack raíz)
+  // ══════════════════════════════════════════════════
+  {n:'Mega Attività di Motricità Grossolana',t:'pdf',url:F.pack,cat:['inicial','sinmat','lluvia'],tags:['Inicial'],mat:'Senza materiali',desc:'Grande raccolta di attività di motricità grossolana per la scuola dell infanzia con illustrazioni.'},
+  {n:'Circuiti Psicomotori — Infanzia',t:'pdf',url:F.pack,cat:['inicial','sinmat','lluvia'],tags:['Inicial'],mat:'Senza materiali',desc:'Circuiti psicomotori pronti da allestire in palestra o spazi alternativi con immagini e diagrammi.'},
+  {n:'Espressione Corporea — Sequenze Infanzia',t:'pdf',url:F.pack,cat:['inicial','expresion','sinmat','lluvia'],tags:['Inicial','Espressione'],mat:'Senza materiali',desc:'Sequenze di espressione corporea per bambini di 3, 4 e 5 anni. Pronte da usare.'},
+
+  // ══════════════════════════════════════════════════
+  // EXPRESIÓN CORPORAL
+  // ══════════════════════════════════════════════════
+  {n:'Espressione Ritmica e Attività Musicali',t:'pdf',url:F.pack,cat:['inicial','primaria','expresion','sinmat','lluvia'],tags:['Inicial','Primaria','Espressione'],mat:'Senza materiali',desc:'Attività ritmiche e musicali per integrare movimento ed espressione in classe.'},
+  {n:'Espressione Corporea, Creatività e Abitudini Salutari',t:'pdf',url:F.pack,cat:['primaria','inicial','expresion','sinmat','lluvia'],tags:['Primaria','Inicial'],mat:'Senza materiali',desc:'Attività di espressione corporea integrate con abitudini di vita attiva e salutare.'},
+
+  // ══════════════════════════════════════════════════
+  // YOGA
+  // ══════════════════════════════════════════════════
+  {n:'Yoga per Bambini',t:'pdf',url:F.yoga_n,cat:['inicial','primaria','sinmat','lluvia'],tags:['Inicial','Primaria','Yoga'],mat:'Senza materiali',desc:'Sequenze di yoga adattate per bambini con posture ludiche e attività di respirazione.'},
+  {n:'Yoga, Estiramiento y Actividad Física',t:'pdf',url:F.yoga_e,cat:['primaria','secundaria','sinmat','lluvia'],tags:['Primaria','Secondaria'],mat:'Senza materiali',desc:'Guía completa de yoga, estiramientos y movilidad para distintos niveles educativos.'},
+
+  // ══════════════════════════════════════════════════
+  // PACK COMPLETO
+  // ══════════════════════════════════════════════════
+  {n:'Pack EF Italia — Risorse complete',t:'pdf',url:F.pack,cat:['planif','primaria','secundaria','inicial'],tags:['Italia','Pack'],mat:'Senza materiali',desc:'Pack completo di risorse allineate al curricolo italiano per tutti i livelli.'},
+];
+
+
+var im = {pdf:'📄',doc:'📝',xls:'📊'};
+var ic = {pdf:'ipdf',doc:'idoc',xls:'ixls'};
+var lcat = 'todos', lq = '';
+
+function rlib(items) {
+  var html = '';
+  items.forEach(function(r){
+    var tags = r.tags.map(function(t){return '<span class="rtag rtn">'+t+'</span>';}).join('');
+    if(r.mat!='Vari' && r.mat!='Senza materiali') tags += '<span class="rtag rtm">'+r.mat+'</span>';
+    if(r.cat.indexOf('lluvia')>=0) tags += '<span class="rtag rtl">Lluvia/SUM</span>';
+    html += '<div class="rc">'
+      +'<div class="rctop"><div class="rico '+ic[r.t]+'">'+im[r.t]+'</div>'
+      +'<div><div class="rname">'+r.n+'</div><div class="rmeta">'+r.t.toUpperCase()+'</div></div></div>'
+      +(r.desc?'<div style="font-size:11px;color:var(--txt3);line-height:1.5;">'+r.desc+'</div>':'')
+      +'<div class="rfoot"><div class="rtags">'+tags+'</div>'
+      +'<button class="rdl" onclick="window.open(\''+r.url+'\',\'_blank\')">↓ Abrir</button></div></div>';
+  });
+  document.getElementById('rgrid').innerHTML = html;
+}
+
+function flib(cat, btn) {
+  lcat = cat;
+  var all = document.querySelectorAll('.frow .fbtn');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('on');
+  if(btn) btn.classList.add('on');
+  var items = lcat==='todos' ? rec : rec.filter(function(r){ return r.cat.indexOf(lcat)>=0; });
+  if(lq) items = items.filter(function(r){ return r.n.toLowerCase().indexOf(lq)>=0; });
+  rlib(items);
+}
+
+function flibq(q) {
+  lq = q.toLowerCase();
+  var items = lcat==='todos' ? rec : rec.filter(function(r){ return r.cat.indexOf(lcat)>=0; });
+  if(lq) items = items.filter(function(r){ return r.n.toLowerCase().indexOf(lq)>=0; });
+  rlib(items);
+}
+rlib(rec);
+
+// ─── JUEGOS ────────────────────────────────────────────
+var juegos = [
+  // COOPERACIÓN
+  {e:'🏃',n:'La catena umana',caps:['Cooperazione'],cat:['coop','sinmat'],niv:'Tutti i livelli',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'10 min',
+   org:'Un alunno è "la catena". Quando cattura un altro si tengono per mano.',
+   dev:'La catena può catturare solo circondando chi scappa. Solo le estremità possono toccare. Chi viene catturato si unisce. Vince chi rimane libero più a lungo.',
+   var:'Variante: la cadena se divide cuando llega a 6. Variante fácil: la cadena no se puede separar.',
+   d:'Un giocatore insegue e prende un altro e si tengono per mano. La catena cresce. Vince chi rimane libero più a lungo.'},
+  {e:'🌀',n:'Nodo umano',caps:['Cooperazione','Comunicazione'],cat:['coop','sinmat'],niv:'Primaria e Secondaria',mat:'Senza materiali',esp:'Spazio alternativo / Aula',dur:'8 min',
+   org:'Il gruppo forma un cerchio chiuso.',
+   dev:'Todos cruzan los brazos al centro y toman la mano de dos personas distintas (no al lado). Sin soltar, deben destejerse hasta volver al círculo original.',
+   var:'Variante: en silencio absoluto. Variante: con los ojos cerrados los primeros 30 segundos.',
+   d:'In cerchio tutti prendono mani a caso. Senza mollare devono districarsi. Lavora comunicazione e risoluzione di gruppo.'},
+  {e:'💨',n:'Il vento e l albero',caps:['Fiducia','Forza'],cat:['coop','sinmat'],niv:'Primaria e Secondaria',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'12 min',
+   org:'Gruppi di 3. Uno è l albero (al centro, occhi chiusi), gli altri due sono il vento.',
+   dev:'Il vento spinge dolcemente l albero in diverse direzioni. L albero si lascia andare senza muovere i piedi. Chi fa il vento deve sostenerlo prima che cada.',
+   var:'Avanzado: árbol en círculo completo de 8 personas. Fácil: árbol con los ojos abiertos.',
+   d:'In trii, uno è l albero con gli occhi chiusi. Gli altri due lo spingono delicatamente. Lavora fiducia e forza del tronco.'},
+  {e:'🦅',n:'Equilibrio sull isola',caps:['Equilibrio','Cooperazione'],cat:['coop','sinmat'],niv:'Tutti i livelli',mat:'Carta o coni',esp:'Aula / Spazio alternativo',dur:'10 min',
+   org:'Fogli di giornale o carta sul pavimento come "isole".',
+   dev:'Il gruppo deve spostarsi dal punto A al B pestando solo sulle isole. Se qualcuno tocca il pavimento, tutto il gruppo torna all inizio. Ad ogni giro si possono togliere isole.',
+   var:'Variante: se pueden mover las islas. Variante difícil: no se puede hablar.',
+   d:'Il gruppo si sposta da un lato all altro pestando solo su fogli di carta. Ad ogni giro si tolgono isole.'},
+  // COORDINACIÓN
+  {e:'🎯',n:'Il capitano comanda',caps:['Attenzione','Reazione'],cat:['coord','sinmat','inicial'],niv:'Infanzia e Primaria',mat:'Senza materiali',esp:'Aula / Palestra',dur:'8 min',
+   org:'Tutti in piedi, l insegnante di fronte al gruppo.',
+   dev:'L insegnante dà ordini di movimento (saltare, girare, abbassarsi). Si eseguono solo se preceduti da "il capitano comanda". Chi sbaglia fa una penitenza.',
+   var:'Variante: un alumno toma el rol de capitán. Variante: órdenes cada vez más rápidas.',
+   d:'Solo se ejecutan las órdenes precedidas de "el capitán manda". Ideal para atención y reacción.'},
+  {e:'🤸',n:'Lo specchio',caps:['Espressione','Coordinazione'],cat:['coord','expresion','sinmat'],niv:'Tutti i livelli',mat:'Senza materiali',esp:'Aula / Palestra',dur:'10 min',
+   org:'A coppie, uno di fronte all altro.',
+   dev:'Uno guida movimenti lenti e l altro imita come uno specchio. Al segnale dell insegnante cambiano ruolo. Si può usare musica lenta come guida.',
+   var:'Variante: sin señal, el cambio de rol debe ocurrir naturalmente. Variante: dos parejas se miran.',
+   d:'A coppie uno guida e l altro imita come specchio. Ideale con musica di sottofondo.'},
+  {e:'🎵',n:'Congelati con la musica',caps:['Coordinazione','Attenzione'],cat:['coord','sinmat','inicial'],niv:'Infanzia e Primaria',mat:'Musica (smartphone)',esp:'Palestra / Aula',dur:'10 min',
+   org:'Spazio libero per muoversi.',
+   dev:'Con la musica gli alunni ballano liberamente. Quando si ferma rimangono fermi nella posizione esatta. L insegnante sceglie la prossima consegna di movimento.',
+   var:'Variante: estatuas en parejas. Variante: el último en congelarse hace una penitencia.',
+   d:'Ballano liberamente e quando la musica si ferma rimangono fermi nella posizione esatta.'},
+  {e:'🎲',n:'Numeri e movimento',caps:['Coordinazione','Attenzione'],cat:['coord','sinmat'],niv:'Primaria',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'12 min',
+   org:'Tutti dispersi nello spazio.',
+   dev:'L insegnante grida un numero e gli alunni devono formare gruppi di quel numero esatto. Chi rimane solo o in più paga pegno. Ogni round una consegna diversa.',
+   var:'Variante: el número lo elige un alumno. Variante: grupos deben adoptar una figura.',
+   d:'L insegnante grida un numero e gli alunni formano gruppi esatti. Ogni round con consegna diversa.'},
+  // RESISTENCIA
+  {e:'🏆',n:'Staffetta adattata',caps:['Resistenza','Velocità'],cat:['resist'],niv:'Primaria e Secondaria',mat:'Coni opzionali',esp:'Palestra',dur:'15 min',
+   org:'Squadre in fila. Andata e ritorno al cono.',
+   dev:'Ogni giro un tipo di spostamento diverso: correre, saltare su un piede, girare, di schiena, passi laterali. La squadra che completa prima tutti i giri vince.',
+   var:'Variante cooperativa: todos deben llegar antes de que el siguiente salga. Variante: con objetos para transportar.',
+   d:'Staffetta con variante diversa ogni giro. Camminare, saltare, girare, di schiena.'},
+  {e:'🌊',n:'Il fiume e il mare',caps:['Resistenza','Reazione'],cat:['resist','sinmat'],niv:'Tutti i livelli',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'10 min',
+   org:'Due file parallele al centro. Una è "fiume", l altra "mare".',
+   dev:'L insegnante grida "fiume" o "mare". La squadra nominata corre verso la propria zona sicura prima di essere toccata dall altra. Chi viene catturato cambia squadra.',
+   var:'Variante: el docente dice palabras que empiecen con R o M para confundir. Variante: en cuadrupedia.',
+   d:'Due squadre. Quella nominata corre verso zona sicura prima di essere presa. Ottimo per la reazione.'},
+  {e:'🦁',n:'Caccia alla volpe',caps:['Resistenza','Velocità'],cat:['resist','sinmat'],niv:'Primaria e Secondaria',mat:'Senza materiali',esp:'Palestra',dur:'15 min',
+   org:'Un alunno è la volpe, gli altri la inseguono.',
+   dev:'La volpe scappa da tutti. Quando viene toccata, chi l ha toccata diventa volpe. Versione avanzata: la volpe porta un nastro o pettorina da proteggere.',
+   var:'Variante: dos zorros. Variante: el zorro puede "salvar" a alumnos tocándolos.',
+   d:'Un alunno scappa da tutti. Quando viene toccato trasferisce il ruolo. Ottimo gioco di inseguimento.'},
+  // PREDEPORTIVOS
+  {e:'⚽',n:'Calcio-tennis cooperativo',caps:['Presportivo'],cat:['predeporte'],niv:'Primaria e Secondaria',mat:'Palloni',esp:'Palestra',dur:'15 min',
+   org:'Coppie o trii con un pallone.',
+   dev:'Si passano la palla senza che cada a terra. Si accumulano punti per tocchi consecutivi. Non c e vincitore individuale — l obiettivo è superare il record precedente.',
+   var:'Variante: con la mano no dominante. Variante: solo con la cabeza o el pie.',
+   d:'A coppie si passano la palla senza farla cadere. Accumulano punti in modo cooperativo.'},
+  {e:'🏀',n:'Basket senza canestro',caps:['Presportivo'],cat:['predeporte'],niv:'Primaria e Secondaria',mat:'Pallone',esp:'Palestra',dur:'15 min',
+   org:'Due squadre. Un giocatore per squadra si mette in piedi su una panca come "canestro umano".',
+   dev:'Si gioca come a basket ma per segnare bisogna passare la palla al compagno sul banco. Quel compagno ruota ogni 2 minuti.',
+   var:'Variante: la canasta puede moverse. Variante: la canasta solo puede recibir con una mano.',
+   d:'Basket dove il canestro è un compagno in piedi su una panca. Introduce il passaggio e il lavoro di squadra.'},
+  {e:'🎾',n:'Minivolley cooperativo',caps:['Presportivo'],cat:['predeporte'],niv:'Primaria e Secondaria',mat:'Pallone o globo',esp:'Palestra',dur:'12 min',
+   org:'Gruppi di 4-6 ai due lati di una corda o linea a terra.',
+   dev:'L obiettivo è che la palla attraversi la rete il maggior numero di volte possibile tra le due squadre. Non ci sono punti contro l altro — si gioca contro il proprio record.',
+   var:'Variante: con globo (más lento). Variante: máximo 3 toques por lado.',
+   d:'Pallavolo dove entrambe le squadre cooperano per far passare la palla il maggior numero di volte.'},
+  // EXPRESIÓN CORPORAL
+  {e:'🎭',n:'La macchina umana',caps:['Espressione','Cooperazione'],cat:['expresion','coop','sinmat'],niv:'Primaria e Secondaria',mat:'Senza materiali',esp:'Aula / Spazio alternativo',dur:'15 min',
+   org:'Gruppi di 6-8 alunni.',
+   dev:'Il gruppo deve costruire una "macchina" dove ognuno è un pezzo con un movimento e suono ripetitivo. Ogni pezzo si aggancia al successivo.',
+   var:'Variante: la máquina se rompe y se repara. Variante: emoción temática (máquina triste, feliz).',
+   d:'Il gruppo costruisce una macchina umana dove ognuno è un pezzo con movimento e suono.'},
+  {e:'🌙',n:'Statue con emozione',caps:['Espressione'],cat:['expresion','sinmat'],niv:'Tutti i livelli',mat:'Musica',esp:'Aula / Palestra',dur:'10 min',
+   org:'Spazio libero.',
+   dev:'Gli alunni si muovono al ritmo della musica. Quando si ferma, l insegnante grida un emozione (gioia, tristezza, sorpresa, paura). Devono restare "statua" esprimendo quell emozione.',
+   var:'Variante: en parejas expresan la misma emoción. Variante: adivinan la emoción del otro.',
+   d:'Quando la musica si ferma l insegnante grida un emozione e gli alunni si bloccano esprimendola.'},
+  // INICIAL
+  {e:'🐛',n:'Il verme',caps:['Coordinazione'],cat:['coord','sinmat','inicial'],niv:'Infanzia',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'8 min',
+   org:'Fila di alunni tenendosi per le spalle.',
+   dev:'L insegnante è la testa del verme. Guida il gruppo nello spazio con movimenti diversi: abbassati, in punta di piedi, lenti, veloci. Poi un alunno guida.',
+   var:'Variante: el gusano intenta morderse la cola. Variante: dos gusanos compiten.',
+   d:'Fila di alunni che si tengono per le spalle. La testa guida il verme nello spazio.'},
+  {e:'🐢',n:'La tartaruga',caps:['Cooperazione','Equilibrio'],cat:['coop','sinmat','inicial'],niv:'Infanzia e Primaria',mat:'Materassino o tela',esp:'Palestra',dur:'10 min',
+   org:'Gruppi di 4. Condividono un materassino.',
+   dev:'Il gruppo deve spostarsi senza che nessuno metta il piede fuori dal materassino. Si muovono insieme da un estremo all altro della palestra.',
+   var:'Variante: con obstáculos. Variante: la colchoneta se dobla y el espacio se reduce.',
+   d:'Gruppi di 4 si spostano tutti su un materassino senza uscire. Lavora coordinazione di gruppo.'},
+  // FUERZA / RESISTENCIA
+  {e:'💪',n:'Guerrieri del pavimento',caps:['Forza','Equilibrio'],cat:['resist','sinmat'],niv:'Primaria e Secondaria',mat:'Senza materiali',esp:'Palestra',dur:'12 min',
+   org:'A coppie.',
+   dev:'In quadrupedia, ognuno cerca di sbilanciare l altro. L obiettivo è che l altro tocchi il pavimento con ginocchio o fianchi. Si può spingere solo con le mani.',
+   var:'Variante: de pie, un pie a la vez. Variante: con los brazos cruzados.',
+   d:'En cuadrupedia intentan desequilibrarse mutuamente. Solo con las manos.'},
+  {e:'🧗',n:'Il circuito pazzo',caps:['Resistenza','Coordinazione'],cat:['resist'],niv:'Primaria',mat:'Coni, cerchi, panche',esp:'Palestra',dur:'20 min',
+   org:'Circuito por estaciones.',
+   dev:'5 estaciones con tarea diferente: correr zig-zag, saltar aros, equilibrio en banco, rodar en colchoneta, lanzar a un blanco. 1 minuto por estación, 15 segundos de descanso.',
+   var:'Variante: se puede hacer con solo 3 estaciones. Variante: cronometrado por equipos.',
+   d:'5 estaciones de 1 minuto cada una: zig-zag, salto, equilibrio, rodar, lanzar.'},
+  // SECUNDARIA
+  {e:'🎯',n:'Dodgeball per zone',caps:['Velocità','Reazione'],cat:['resist','secundaria'],niv:'Secondaria',mat:'Palloni morbidi',esp:'Palestra',dur:'20 min',
+   org:'Campo diviso in due. Ogni squadra ha palloni di gommapiuma.',
+   dev:'I giocatori cercano di eliminare quelli della squadra avversaria colpendoli con la palla. Chi viene colpito va nella zona laterale. Può tornare se prende una palla al volo.',
+   var:'Variante: todos juegan vs todos. Variante: con 3 equipos y zona neutral en el centro.',
+   d:'Elimina la squadra avversaria lanciando palle. Si può tornare prendendo una palla al volo.'},
+  {e:'🏐',n:'Pallavolo seduti',caps:['Presportivo','Cooperazione'],cat:['predeporte','secundaria','inclusion'],niv:'Secondaria',mat:'Pallone o globo',esp:'Palestra / Spazio alternativo',dur:'20 min',
+   org:'Due squadre sedute a terra ai due lati di una rete bassa (corda a 50cm).',
+   dev:'Si gioca a pallavolo ma tutti rimangono seduti e si spostano strisciando. Massimo 3 tocchi per lato. Ottimo per lavorare sull inclusione.',
+   var:'Variante: con globo para dificultar el control. Variante: solo con la mano no dominante.',
+   d:'Pallavolo dove tutti giocano seduti a terra. Ideale per inclusione e lavoro collaborativo.'},
+  {e:'🏃',n:'Fazzoletto con consegna',caps:['Velocità','Reazione'],cat:['resist','secundaria'],niv:'Secondaria',mat:'Fazzoletto o nastro',esp:'Palestra',dur:'15 min',
+   org:'Due squadre in fila una di fronte all altra. Numerate da 1 a N.',
+   dev:'L insegnante tiene il fazzoletto al centro e chiama un numero. I due con quel numero corrono e chi prende il fazzoletto e torna alla base senza essere toccato fa punto.',
+   var:'Variante: en lugar de número, el docente describe una característica (quien tiene zapatillas, quien tiene hermanos).',
+   d:'Clásico con variantes de cooperación. El llamado corre a buscar el pañuelo y vuelve sin ser tocado.'},
+  {e:'🧠',n:'Scacchi umani',caps:['Strategia','Cooperazione'],cat:['coop','secundaria'],niv:'Secondaria',mat:'Coni colorati',esp:'Palestra',dur:'25 min',
+   org:'Tabellone gigante segnato con coni (8x8). Due squadre di 16 giocatori sono i pezzi.',
+   dev:'Ogni alunno rappresenta un pezzo degli scacchi e si muove secondo le sue regole. L insegnante dà il segnale di turno. Quando un pezzo viene "mangiato" si siede.',
+   var:'Variante simplificada: solo peones y reyes. Variante: el equipo debate en 30 segundos antes de cada jugada.',
+   d:'Scacchi a scala umana. Ogni alunno è un pezzo e si muove secondo le regole del gioco.'},
+  {e:'🌊',n:'Pallamano adattata',caps:['Presportivo','Velocità'],cat:['predeporte','secundaria'],niv:'Secondaria',mat:'Pallone',esp:'Palestra',dur:'25 min',
+   org:'Due squadre. Porte segnate con coni.',
+   dev:'Pallamano con regole semplificate: non si può camminare con la palla (solo 3 passi), passaggio obbligatorio prima di tirare in porta. Enfasi sul movimento senza palla e sul gioco collettivo.',
+   var:'Variante: el gol vale solo si participaron mínimo 4 jugadores del equipo. Variante: portero rotativo.',
+   d:'Pallamano con regole semplificate che privilegiano il passaggio e il movimento collettivo.'},
+  {e:'🎪',n:'Circo cooperativo',caps:['Equilibrio','Espressione'],cat:['expresion','coop','sinmat','secundaria'],niv:'Secondaria',mat:'Senza materiali',esp:'Palestra / Spazio alternativo',dur:'20 min',
+   org:'Grupos de 5-6.',
+   dev:'Ogni gruppo crea un numero di circo con ruoli: giocolieri (coordinazione), equilibristi (a coppie), acrobati (pose di gruppo), presentatore (narratore).',
+   var:'Variante: con música temática. Variante: el grupo hace una historia corta con los números.',
+   d:'Grupos crean números de circo: malabaristas, equilibristas y acróbatas. Presentan al resto.'},
+  {e:'💥',n:'Bruciato a squadre',caps:['Velocità','Strategia'],cat:['resist','secundaria'],niv:'Secondaria',mat:'Palloni',esp:'Palestra',dur:'20 min',
+   org:'Due squadre in campi separati da una linea centrale.',
+   dev:'Si lancia la palla per colpire quelli della squadra avversaria. Chi viene colpito passa al campo "bruciato" dietro la squadra avversaria e può continuare a lanciare.',
+   var:'Variante: el quemado puede ser rescatado si le pasan la pelota y la atrapa. Variante: solo se puede apuntar de la cintura para abajo.',
+   d:'Quemado con zona de "quemados" activa. Coordinación entre frente y retaguardia.'},
+  {e:'🏋',n:'Circuito di condizione fisica',caps:['Resistenza','Forza'],cat:['resist','secundaria'],niv:'Secondaria',mat:'Senza materiali',esp:'Palestra',dur:'25 min',
+   org:'6 estaciones marcadas con conos. Grupos rotativos.',
+   dev:'Estación 1: 20 sentadillas. Estación 2: 30 seg plancha. Estación 3: 15 saltos en estrella. Estación 4: 20 abdominales. Estación 5: 10 flexiones (adaptadas). Estación 6: 30 seg trote en el lugar. 45 seg trabajo / 15 seg descanso.',
+   var:'Variante: a elección del alumno la intensidad. Variante: cada estación tiene versión fácil y difícil.',
+   d:'6 estaciones de fuerza y resistencia con 45 segundos de trabajo y 15 de descanso.'},
+  {e:'🧩',n:'Attività fisica e strategia',caps:['Strategia','Velocità'],cat:['coop','secundaria'],niv:'Secondaria',mat:'Pettorine o colori',esp:'Palestra',dur:'20 min',
+   org:'4 squadre con colori diversi.',
+   dev:'Ogni squadra deve "conquistare" zone della palestra toccando un cono e piazzando il proprio colore. Se un giocatore viene toccato da un avversario mentre porta il cono torna alla sua base. Vince chi conquista più zone allo scadere del tempo.',
+   var:'Variante: conos de distinto valor (más lejos = más puntos). Variante: un jugador es "escudo" y no puede ser tocado.',
+   d:'4 squadre conquistano zone della palestra. Strategia di attacco e difesa simultanea.'},
+  {e:'🎭',n:'Teatro di improvvisazione motoria',caps:['Espressione','Comunicazione'],cat:['expresion','sinmat','secundaria'],niv:'Secondaria',mat:'Senza materiali',esp:'Spazio alternativo / Aula',dur:'25 min',
+   org:'Grupos de 4-5.',
+   dev:'L insegnante dà una situazione (sono nello spazio, c è una tempesta, sono robot, ecc.). Il gruppo deve recitare la situazione solo con il movimento, senza parlare.',
+   var:'Variante: el docente cambia la situación a mitad de la actuación. Variante: los grupos deben adivinar la situación de cada uno.',
+   d:'Gruppi recitano situazioni proposte dall insegnante solo con il movimento, senza parlare.'},
+  {e:'🏊',n:'Il naufragio',caps:['Cooperazione','Strategia'],cat:['coop','sinmat','secundaria'],niv:'Secondaria',mat:'Cerchi o fogli',esp:'Palestra / Spazio alternativo',dur:'15 min',
+   org:'Grupos de 8-10. Cada uno tiene 3 aros o papeles como "balsas".',
+   dev:'Il gruppo naviga nello spazio pestando solo le proprie zattere. Quando l insegnante dice "tempesta" devono raggrupparsi tutti sulle zattere disponibili. Con ogni tormenta se ne tolgono alcune.',
+   var:'Variante: fusión de grupos al perder balsas. Variante: en silencio.',
+   d:'Il gruppo si sposta su zattere e deve sopravvivere alle tempeste dove vengono tolte zattere.'},
+  {e:'⚡',n:'Sprint e tattica',caps:['Velocità','Strategia'],cat:['resist','secundaria'],niv:'Secondaria',mat:'Coni',esp:'Palestra',dur:'20 min',
+   org:'Due squadre. Basi segnate ai quattro angoli del campo.',
+   dev:'Un giocatore per squadra corre dalla propria base verso il centro contemporaneamente. Al centro ci sono oggetti. Chi arriva prima sceglie quale oggetto portare.',
+   var:'Variante: pueden relevarse. Variante: los objetos tienen también una penalidad oculta.',
+   d:'Sprint al centro para tomar objetos de distinto valor. El rival puede interceptar antes de llegar a la base.'},
+];
+
+var jDetalle = null;
+
+function renderJuegos(items) {
+  var html = '';
+  items.forEach(function(j, idx) {
+    html += '<div class="jc" onclick="mostrarJuego('+idx+',this)" data-idx="'+idx+'">'
+      +'<div class="jch"><div style="font-size:26px;line-height:1">'+j.e+'</div>'
+      +'<div class="jcaps">'+j.caps.map(function(c){return '<span class="jcap">'+c+'</span>';}).join('')+'</div></div>'
+      +'<div class="jname">'+j.n+'</div>'
+      +'<div class="jdesc">'+j.d+'</div>'
+      +'<div class="jpills"><span class="jp">'+j.niv+'</span><span class="jp">'+j.mat+'</span><span class="jp">'+j.dur+'</span></div>'
+      +'</div>';
+  });
+  document.getElementById('jgrid').innerHTML = html || '<div style="color:var(--txt3);font-size:13px;padding:20px;">No hay juegos para ese filtro.</div>';
+  document.getElementById('jdetail').style.display = 'none';
+  jDetalle = null;
+}
+
+function mostrarJuego(idx, card) {
+  var j = juegosActuales[idx];
+  var det = document.getElementById('jdetail');
+  document.querySelectorAll('.jc').forEach(function(c){ c.style.borderColor=''; c.style.background=''; });
+  if(jDetalle === idx) {
+    det.style.display = 'none'; jDetalle = null; return;
+  }
+  jDetalle = idx;
+  card.style.borderColor = 'var(--or)';
+  det.style.display = 'block';
+  det.innerHTML = '<div class="card" style="border-color:var(--or);">'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">'
+    +'<span style="font-size:32px;">'+j.e+'</span>'
+    +'<div><div style="font-size:16px;font-weight:800;color:var(--txt);">'+j.n+'</div>'
+    +'<div style="font-size:11px;color:var(--txt3);margin-top:2px;">'+j.niv+' · '+j.mat+' · '+j.esp+' · '+j.dur+'</div></div></div>'
+    +'<div class="g2" style="gap:10px;">'
+    +'<div><div style="font-size:10px;font-weight:700;color:var(--or2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Organización</div><div style="font-size:12px;color:var(--txt2);line-height:1.65;">'+j.org+'</div></div>'
+    +'<div><div style="font-size:10px;font-weight:700;color:var(--or2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Desarrollo</div><div style="font-size:12px;color:var(--txt2);line-height:1.65;">'+j.dev+'</div></div>'
+    +'</div>'
+    +'<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--brd);">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--or2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Variantes</div>'
+    +'<div style="font-size:12px;color:var(--txt2);line-height:1.65;">'+j.var+'</div></div>'
+    +'</div>';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+var juegosActuales = juegos.slice();
+
+function filterJ(cat, btn) {
+  jCatActual = cat;
+  var all = document.querySelectorAll('#jfilters .fbtn');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('on');
+  if(btn) btn.classList.add('on');
+  aplicarFiltroJuegos();
+}
+
+function filtrarJuegos() {
+  aplicarFiltroJuegos();
+}
+
+function aplicarFiltroJuegos() {
+  var q = (document.getElementById('jsearch').value||'').toLowerCase();
+  var catMap = {todos:null,coord:'coord',resist:'resist',coop:'coop',predeporte:'predeporte',expresion:'expresion',sinmat:'sinmat',inicial:'inicial',secundaria:'secundaria'};
+  var catFilter = catMap[jCatActual];
+  juegosActuales = juegos.filter(function(j){
+    var matchCat = !catFilter || (j.cat && j.cat.indexOf(catFilter)>=0);
+    var matchQ = !q || j.n.toLowerCase().indexOf(q)>=0 || j.d.toLowerCase().indexOf(q)>=0;
+    return matchCat && matchQ;
+  });
+  renderJuegos(juegosActuales);
+}
+
+renderJuegos(juegos);
+
+// ─── ALUMNOS (localStorage) ───────────────────────────────
+var alData = JSON.parse(localStorage.getItem('motoria_alumnos') || '{}');
+var cursoActual = null;
+
+function saveAl() { localStorage.setItem('motoria_alumnos', JSON.stringify(alData)); }
+
+function renderCursoSel() {
+  var sel = document.getElementById('curso-sel');
+  var cursos = Object.keys(alData);
+  sel.innerHTML = '<option value="">Seleziona corso...</option>';
+  cursos.forEach(function(c){
+    sel.innerHTML += '<option value="'+c+'"'+(c===cursoActual?' selected':'')+'>'+c+'</option>';
+  });
+}
+
+function cambiarCurso() {
+  cursoActual = document.getElementById('curso-sel').value || null;
+  renderAlumnos();
+}
+
+function renderAlumnos() {
+  var empty = document.getElementById('al-empty');
+  var table = document.getElementById('al-table');
+  var addBtn = document.getElementById('btn-add-al');
+  if(!cursoActual || !alData[cursoActual]) {
+    empty.style.display='block'; table.style.display='none'; addBtn.style.display='none'; return;
+  }
+  empty.style.display='none'; table.style.display='block'; addBtn.style.display='block';
+  var alumnos = alData[cursoActual];
+  document.getElementById('al-curso-title').textContent = cursoActual;
+  document.getElementById('al-count').textContent = alumnos.length + ' alumno' + (alumnos.length!==1?'s':'');
+  var html = '';
+  if(alumnos.length===0){
+    html = '<div style="padding:24px;text-align:center;color:var(--txt3);font-size:13px;">No hay alumnos en este curso. Hacé click en "+ Aggiungi alunno".</div>';
+  } else {
+    alumnos.forEach(function(a, i){
+      var init = a.nombre.split(' ').map(function(x){return x[0];}).join('').substring(0,2).toUpperCase();
+      var asist = a.asist || 'ok';
+      var dotClass = asist==='ok'?'dok':asist==='tard'?'dta':'dau';
+      var dotLabel = asist==='ok'?'Presente':asist==='tard'?'Ritardo':'Assente';
+      html += '<div class="erow">'
+        +'<div class="eav">'+init+'</div>'
+        +'<div class="ein"><div class="ename">'+a.nombre+'</div></div>'
+        +'<select onchange="setAsist('+i+',this.value)" style="height:24px;background:var(--s3);border:1px solid var(--brd);border-radius:5px;color:var(--txt2);font-family:\'Plus Jakarta Sans\',sans-serif;font-size:11px;padding:0 6px;outline:none;">'
+        +'<option value="ok"'+(asist==='ok'?' selected':'')+'>Presente</option>'
+        +'<option value="tard"'+(asist==='tard'?' selected':'')+'>Ritardo</option>'
+        +'<option value="aus"'+(asist==='aus'?' selected':'')+'>Assente</option>'
+        +'</select>'
+        +'<button onclick="borrarAlumno('+i+')" style="width:24px;height:24px;border-radius:6px;border:none;background:var(--s4);color:var(--txt3);cursor:pointer;font-size:14px;line-height:1;">×</button>'
+        +'</div>';
+    });
+  }
+  document.getElementById('al-list').innerHTML = html;
+}
+
+function setAsist(i, val) {
+  if(!cursoActual) return;
+  alData[cursoActual][i].asist = val;
+  saveAl();
+}
+
+function tomarAsistencia() {
+  if(!cursoActual || !alData[cursoActual]) return;
+  alData[cursoActual].forEach(function(a){ a.asist = 'ok'; });
+  saveAl(); renderAlumnos();
+}
+
+function showAddCurso() { document.getElementById('curso-form').style.display='block'; document.getElementById('curso-nombre').focus(); }
+function cerrarCursoForm() { document.getElementById('curso-form').style.display='none'; document.getElementById('curso-nombre').value=''; }
+
+function guardarCurso() {
+  var nombre = document.getElementById('curso-nombre').value.trim();
+  if(!nombre) return;
+  if(!alData[nombre]) alData[nombre] = [];
+  saveAl(); cursoActual = nombre; renderCursoSel();
+  document.getElementById('curso-sel').value = nombre;
+  cerrarCursoForm(); renderAlumnos();
+}
+
+function showAddAlumno() { document.getElementById('al-form').style.display='block'; document.getElementById('al-form-title').textContent='Nuevo alumno en '+cursoActual; document.getElementById('al-nombre').focus(); }
+function cerrarForm() { document.getElementById('al-form').style.display='none'; document.getElementById('al-nombre').value=''; }
+
+function guardarAlumno() {
+  var nombre = document.getElementById('al-nombre').value.trim();
+  if(!nombre || !cursoActual) return;
+  alData[cursoActual].push({nombre:nombre, asist:'ok'});
+  saveAl(); cerrarForm(); renderAlumnos();
+}
+
+function borrarAlumno(i) {
+  if(!cursoActual) return;
+  alData[cursoActual].splice(i,1);
+  saveAl(); renderAlumnos();
+}
+
+function borrarCurso() {
+  if(!cursoActual) return;
+  var btn = document.querySelector('[onclick="borrarCurso()"]');
+  if(!btn) return;
+  if(btn.dataset.confirming === '1') {
+    delete alData[cursoActual];
+    saveAl(); cursoActual = null;
+    renderCursoSel(); renderAlumnos();
+  } else {
+    btn.dataset.confirming = '1';
+    btn.textContent = 'Sicuro? Tocca di nuovo';
+    btn.style.background = 'rgba(255,68,68,.25)';
+    btn.style.borderColor = 'var(--dng)';
+    setTimeout(function(){
+      if(btn.dataset.confirming) {
+        btn.dataset.confirming = '';
+        btn.textContent = 'Elimina curso';
+        btn.style.background = 'rgba(255,68,68,.1)';
+        btn.style.borderColor = 'rgba(255,68,68,.2)';
+      }
+    }, 3000);
+  }
+}
+
+renderCursoSel(); renderAlumnos();
+
+
+
+// ─── TIMER ─────────────────────────────────────────────
+var CIRC = 2 * Math.PI * 88;
+var tTot = 120, tLeft = 120, tInt = null, tOn = false;
+
+function fmt(s) {
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+function draw() {
+  document.getElementById('trc').style.strokeDashoffset = CIRC * (1 - tLeft/tTot);
+  document.getElementById('tdisp').textContent = fmt(tLeft);
+  var c = tLeft<=10 ? 'var(--dng)' : tLeft<=60 ? 'var(--wrn)' : 'var(--or)';
+  document.getElementById('trc').style.stroke = c;
+}
+function tSet(s, lbl) {
+  clearInterval(tInt); tOn = false; tTot = s; tLeft = s;
+  document.getElementById('tstart').textContent = 'Avvia';
+  document.getElementById('tlbl').textContent = lbl;
+  document.getElementById('trc').style.stroke = 'var(--or)';
+  var ps = document.querySelectorAll('.ps');
+  for(var i=0;i<ps.length;i++) ps[i].classList.remove('on');
+  draw();
+}
+function tToggle() {
+  if(tOn) {
+    clearInterval(tInt); tOn = false;
+    document.getElementById('tstart').textContent = 'Continuar';
+  } else {
+    tOn = true;
+    document.getElementById('tstart').textContent = 'Pausa';
+    tInt = setInterval(function(){
+      if(tLeft > 0){ tLeft--; draw(); }
+      else {
+        clearInterval(tInt); tOn = false;
+        document.getElementById('tstart').textContent = 'Avvia';
+        document.getElementById('tlbl').textContent = 'Tempo!';
+      }
+    }, 1000);
+  }
+}
+function tReset() {
+  clearInterval(tInt); tOn = false; tLeft = tTot;
+  document.getElementById('tstart').textContent = 'Avvia';
+  document.getElementById('tlbl').textContent = 'Pronto per iniziare';
+  document.getElementById('trc').style.stroke = 'var(--or)';
+  draw();
+}
+draw();
+</script>
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav">
+  <button class="mn-btn on" id="mb-dashboard" onclick="go('dashboard');setMB('mb-dashboard')">
+    <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>
+    <span>Inizio</span>
+  </button>
+  <button class="mn-btn" id="mb-ia" onclick="go('ia');setMB('mb-ia')">
+    <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5.5 9.5c.7 1.2 4.3 1.2 5 0" stroke-linecap="round"/><circle cx="6" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    <span>IA</span>
+  </button>
+  <button class="mn-btn" id="mb-biblioteca" onclick="go('biblioteca');setMB('mb-biblioteca')">
+    <svg viewBox="0 0 16 16"><path d="M3 2h7l3 3v9H3z"/><path d="M10 2v3h3"/><line x1="5" y1="7" x2="11" y2="7"/><line x1="5" y1="10" x2="8" y2="10"/></svg>
+    <span>Risorse</span>
+  </button>
+  <button class="mn-btn" id="mb-juegos" onclick="go('juegos');setMB('mb-juegos')">
+    <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6 8h4M8 6v4"/></svg>
+    <span>Giochi</span>
+  </button>
+  <button class="mn-btn" id="mb-timer" onclick="go('timer');setMB('mb-timer')">
+    <svg viewBox="0 0 16 16"><circle cx="8" cy="9" r="5.5"/><path d="M8 6v3l2 1.5"/><line x1="6" y1="1.5" x2="10" y2="1.5"/></svg>
+    <span>Tempo</span>
+  </button>
+  <button class="mn-btn" id="mb-alumnos" onclick="go('alumnos');setMB('mb-alumnos')">
+    <svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.5 2.2-4 5-4s5 1.5 5 4"/></svg>
+    <span>Alunni</span>
+  </button>
+</nav>
+
+</body>
+</html>
