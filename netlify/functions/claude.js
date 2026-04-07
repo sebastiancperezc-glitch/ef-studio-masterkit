@@ -5,7 +5,15 @@ exports.handler = async function(event) {
 
   try {
     var body = JSON.parse(event.body);
-    var apiKey = process.env.ANTHROPIC_API_KEY ;
+    var apiKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'API key not configured' })
+      };
+    }
+
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -21,9 +29,20 @@ exports.handler = async function(event) {
     });
 
     var data = await response.json();
+
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({ error: data.error || 'API error', status: response.status })
+      };
+    }
+
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
       body: JSON.stringify(data)
     };
   } catch (err) {
