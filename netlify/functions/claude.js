@@ -5,7 +5,7 @@ exports.handler = async function(event) {
 
   try {
     var body = JSON.parse(event.body);
-    var apiKey = process.env.ANTHROPIC_API_KEY 
+    var apiKey = process.env.ANTHROPIC_API_KEY ;
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
